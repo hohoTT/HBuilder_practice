@@ -1,0 +1,18 @@
+{
+  "list-index.html": {
+    "resources": [
+      "index.html",
+      "js/mui.min.js",
+      "css/mui.min.css"
+    ],
+    "refer": [
+      "index.html",
+      "list.html"
+    ]
+  },
+  "list.html": {
+    "resources": [
+      "fonts/mui.ttf"
+    ]
+  }
+}
