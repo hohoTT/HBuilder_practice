@@ -13,6 +13,22 @@
   "list.html": {
     "resources": [
       "fonts/mui.ttf"
+    ],
+    "refer": []
+  },
+  "window.html": {
+    "resources": [
+      "js/mui.min.js",
+      "css/mui.min.css"
+    ],
+    "refer": [
+      "new_window.html"
+    ]
+  },
+  "new_window.html": {
+    "resources": [
+      "js/mui.min.js",
+      "css/mui.min.css"
     ]
   }
 }
