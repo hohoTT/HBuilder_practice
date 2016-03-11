@@ -1,0 +1,3 @@
+# HBuilder_practice
+
+主要用于Hbuilder的练习使用，使用Hbuilder进行移动端APP的开发
