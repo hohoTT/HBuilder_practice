@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title></title>
+    <script src="js/mui.min.js"></script>
+    <link href="css/mui.min.css" rel="stylesheet"/>
+    <script type="text/javascript" charset="utf-8">
+      	mui.init();
+      	mui.plusReady(function(){
+      		document.getElementById("login-btu").addEventListener('tap', function(){
+      			mui.openWindow({
+      				url : "login.html",
+      				id : "login"
+      			});
+      		});
+      	});
+      	
+      	mui.plusReady(function(){
+      		document.getElementById("register-btu").addEventListener('tap', function(){
+      			mui.openWindow({
+      				url : "register.html",
+      				id : "register"
+      			});
+      		});
+      	});
+      	
+    </script>
+    <style>
+    	#login-div{
+    		margin-top: 15px;
+    	}
+    </style>
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav">
+	    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+	    <h1 class="mui-title">标题</h1>
+	</header>
+	<div id="login-div" class="mui-content mui-content-padded">
+	    <button id="login-btu" class="mui-btn mui-btn-block mui-btn-primary">登录</button>
+	    <button id="register-btu" class="mui-btn mui-btn-block mui-btn-success">注册</button>
+	</div>
+	
+	<div class="mui-content">
+		<ul class="mui-table-view">
+	            <li class="mui-table-view-cell">
+	                <a class="mui-navigate-right" href="#">
+	                    Item 1
+	                </a>
+	            </li>
+	            <li class="mui-table-view-cell">
+	                <a class="mui-navigate-right">
+	                     Item 2
+	                </a>
+	            </li>
+	            <li class="mui-table-view-cell">
+	                <a class="mui-navigate-right">
+	                     Item 3
+	                </a>
+	            </li>
+	        </ul>
+	</div>
+	
+</body>
+</html>
