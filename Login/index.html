@@ -9,8 +9,59 @@
     <script type="text/javascript" charset="utf-8">
       	mui.init();
     </script>
+    <style>
+    	#login-div{
+    		margin-top: 12px;
+    	}
+    </style>
 </head>
 <body>
+	<header class="mui-bar mui-bar-nav">
+	    <h1 class="mui-title">hohoTT 登录页面</h1>
+	</header>
 	
+	<div id="login-div" class="mui-content">
+	    <form class="mui-input-group">
+	    	<div class="mui-input-row">
+	    		<label for="">账号</label>
+	    		<input type="text" class="mui-input mui-input-clear" id="account" />
+	    	</div>
+	    	<div class="mui-input-row">
+	    		<label for="">密码</label>
+	    		<input type="password" class="mui-input mui-input-clear" id="password" />
+	    	</div>
+	    </form>
+	    
+	    <div id="" class="mui-content-padded">
+	    	<button id="login-btu" class="mui-btn mui-btn-block mui-btn-primary">登录</button>
+	    </div>
+	</div>
+	<script type="text/javascript">
+		mui.plusReady(function(){
+			var login = document.getElementById("login-btu");
+			var account = document.getElementById("account");
+			var password = document.getElementById("password");
+			
+			login.addEventListener('tap', function(){
+				mui.ajax('http://localhost/login.php', {
+					data:{
+						acount : account.value,
+						password : password.value
+					},
+					dataType : 'json',
+					type : 'get',
+					timeout : '10000',
+					success : function(data){
+						if(data.result == 1){
+							window.location.href="main.html";
+						}
+					},
+					error : function(){
+						// todo
+					}
+				})
+			})
+		})
+	</script>
 </body>
 </html>
