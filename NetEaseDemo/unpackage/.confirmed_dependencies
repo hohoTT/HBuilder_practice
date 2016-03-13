@@ -1,0 +1,15 @@
+{
+	"index.html": {
+		"resources": [
+			"image/night_biz_news_column_subscribe_group_item_icon_down.png",
+			"image/4.jpg",
+			"js/mui.min.js",
+			"image/3.jpg",
+			"image/2.jpg",
+			"css/mui.min.css",
+			"image/1.jpg",
+			"image/night_biz_tie_user_avater_default.png",
+			"image/biz_pic_wait_down_img.png"
+		]
+	}
+}

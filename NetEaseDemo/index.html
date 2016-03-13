@@ -36,6 +36,10 @@
     	.tab_title a:hover{
     		color: #dc3137;
     	}
+    	.mui-slider-item img{
+    		width: 410px;
+    		height: 215px;
+    	}
     </style>
 </head>
 <body>
@@ -58,7 +62,25 @@
 	    	</div>
 	    </div>
 	    
-	    
+	    <!--
+        	作者：609029365@qq.com
+        	时间：2016-03-13
+        	描述：添加图片轮播的效果
+        -->
+        <div class="mui-slider">
+		  <div class="mui-slider-group mui-slider-loop">
+		    <!--支持循环，需要重复图片节点-->
+		    <div class="mui-slider-item mui-slider-item-duplicate"><a href="#"><img src="image/4.jpg" /></a></div>
+		    <div class="mui-slider-item"><a href="#"><img src="image/1.jpg" /></a></div>
+		    <div class="mui-slider-item"><a href="#"><img src="image/2.jpg" /></a></div>
+		    <div class="mui-slider-item"><a href="#"><img src="image/3.jpg" /></a></div>
+		    <div class="mui-slider-item"><a href="#"><img src="image/4.jpg" /></a></div>
+		    <!--支持循环，需要重复图片节点-->
+		    <div class="mui-slider-item mui-slider-item-duplicate"><a href="#"><img src="image/1.jpg" /></a></div>
+		  </div>
+		</div>
 	</div>
+	
+	
 </body>
 </html>
