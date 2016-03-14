@@ -9,7 +9,9 @@
 			"css/mui.min.css",
 			"image/1.jpg",
 			"image/night_biz_tie_user_avater_default.png",
-			"image/biz_pic_wait_down_img.png"
+			"image/biz_pic_wait_down_img.png",
+			"fonts/mui.ttf",
+			"image/til_img1.jpg"
 		]
 	}
 }

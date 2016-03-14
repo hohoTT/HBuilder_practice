@@ -8,6 +8,13 @@
     <link href="css/mui.min.css" rel="stylesheet"/>
     <script type="text/javascript" charset="utf-8">
       	mui.init();
+      	mui.plusReady(function(){
+      		//获得slider插件对象
+			var gallery = mui('.mui-slider');
+			gallery.slider({
+			  interval:3000//自动轮播周期，若为0则不自动播放，默认为0；
+			});
+      	});
     </script>
     <style>
     	#login-mh{
@@ -24,13 +31,11 @@
     		margin-top: 3px;
     	}
     	.tab_title{
-    		width: 410px;
-    		height: 40px;
     		background: gainsboro;
     	}
     	.tab_title a{
     		color: black;
-    		margin: 0 0 0 3%;
+    		margin: 0 0 0 4.5%;
     		line-height: 40px;
     	}
     	.tab_title a:hover{
@@ -39,6 +44,15 @@
     	.mui-slider-item img{
     		width: 410px;
     		height: 215px;
+    	}
+    	.dz_btn{
+    		width: 90px;
+    		height: 24px;
+    		border: 1px solid gray;
+    		border-radius: 90em;
+    		color: gray;
+    		text-align: center;
+    		margin: 3% 0 0 50%;
     	}
     </style>
 </head>
@@ -50,7 +64,7 @@
 	    </div>
 	</header>
 	
-	<div class="mui-content">
+	<div id="main" class="mui-content">
 	    <div>
 	    	<div class="tab_title">
 	    		<a>头条</a>
@@ -79,8 +93,42 @@
 		    <div class="mui-slider-item mui-slider-item-duplicate"><a href="#"><img src="image/1.jpg" /></a></div>
 		  </div>
 		</div>
+		
+	
+		<ul class="mui-table-view">
+		    <li class="mui-table-view-cell mui-media">
+		        <a href="javascript:;">
+		            <img class="mui-media-object mui-pull-right" src="image/til_img1.jpg">
+		            <div class="mui-media-body">
+		                幸福
+		                <p class="mui-ellipsis">能和心爱的人一起睡觉，是件幸福的事情；可是，打呼噜怎么办？</p>
+		            	<div class="dz_btn">666</div>
+		            </div>
+		        </a>
+		    </li>
+		    <li class="mui-table-view-cell mui-media">
+		        <a href="javascript:;">
+		            <img class="mui-media-object mui-pull-right" src="">
+		            <div class="mui-media-body">
+		                木屋
+		                <p class="mui-ellipsis">想要这样一间小木屋，夏天挫冰吃瓜，冬天围炉取暖.</p>
+		                <div class="dz_btn">999</div>
+		            </div>
+		        </a>
+		    </li>
+		    <li class="mui-table-view-cell mui-media">
+		        <a href="javascript:;">
+		            <img class="mui-media-object mui-pull-right" src="">
+		            <div class="mui-media-body">
+		                CBD
+		                <p class="mui-ellipsis">烤炉模式的城，到黄昏，如同打翻的调色盘一般.</p>
+		                <div class="dz_btn">696</div>
+		            </div>
+		        </a>
+		    </li>
+		</ul>
+		
+		
 	</div>
-	
-	
 </body>
 </html>
