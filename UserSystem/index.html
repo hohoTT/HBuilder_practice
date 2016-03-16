@@ -14,6 +14,7 @@
       	mui.plusReady(function(){
       		var add = document.getElementById("add");
       		var find = document.getElementById("find");
+      		var update = document.getElementById("update");
       		
   			var usernameobj = document.getElementById("username");
   			var telobj = document.getElementById("tel");
@@ -27,7 +28,7 @@
 				
       		}); 
       		
-      		//查找用户的事件处理
+      		// 查找用户的事件处理
       		find.addEventListener('tap', function(){
       			var url = "https://hohousersystem.wilddogio.com/user/" + usernameobj.value; 
       			
@@ -37,6 +38,17 @@
       				var result = datasnapshot.val();
       				tel.value = result.tel;
       			});
+      		});
+      		
+      		// 修改更新用户资料的事件处理
+      		update.addEventListener('tap', function(){
+      			var wilddog = new Wilddog("https://hohousersystem.wilddogio.com/user");
+      			
+      			var user = wilddog.child(usernameobj.value);
+      			user.update({
+      				"tel" : telobj.value
+      			});
+      			
       		});
       	});
     </script>
@@ -62,10 +74,11 @@
 	        </div>
 	    </form>
 	    <div class="mui-content-padded" align="center">
-			<button type="button" class="mui-btn mui-btn-blue" id="add">新增用户</button>	    
+			<button type="button" class="mui-btn mui-btn-primary" id="add">新增用户</button>	    
 			
+			<button type="button" class="mui-btn mui-btn-success" id="find">查找用户</button>	
 			
-			<button type="button" class="mui-btn mui-btn-success" id="find">查找用户</button>	 
+			<button type="button" class="mui-btn mui-btn-warning" id="update">修改资料</button>	 
 	    </div>
 	</div>
 </body>
