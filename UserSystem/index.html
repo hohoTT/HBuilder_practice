@@ -13,16 +13,30 @@
       	mui.init();
       	mui.plusReady(function(){
       		var add = document.getElementById("add");
+      		var find = document.getElementById("find");
+      		
+  			var usernameobj = document.getElementById("username");
+  			var telobj = document.getElementById("tel");
+  			
+  			// 新增用户的事件处理
       		add.addEventListener('tap', function(){
-      			var usernameobj = document.getElementById("username");
-      			var telobj = document.getElementById("tel");
-      			
       			var wilddog = new Wilddog('https://hohousersystem.wilddogio.com/user');
-
 				wilddog.child(usernameobj.value).set(
 					{tel:telobj.value}
 				);
 				
+      		}); 
+      		
+      		//查找用户的事件处理
+      		find.addEventListener('tap', function(){
+      			var url = "https://hohousersystem.wilddogio.com/user/" + usernameobj.value; 
+      			
+      			var wilddog = new Wilddog(url);
+      			
+      			wilddog.on('value', function(datasnapshot){
+      				var result = datasnapshot.val();
+      				tel.value = result.tel;
+      			});
       		});
       	});
     </script>
@@ -48,7 +62,10 @@
 	        </div>
 	    </form>
 	    <div class="mui-content-padded" align="center">
-			<button type="button" class="mui-btn mui-btn-blue" id="add">新增用户</button>	    	
+			<button type="button" class="mui-btn mui-btn-blue" id="add">新增用户</button>	    
+			
+			
+			<button type="button" class="mui-btn mui-btn-success" id="find">查找用户</button>	 
 	    </div>
 	</div>
 </body>
