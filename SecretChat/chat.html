@@ -151,6 +151,14 @@
 				
 				var data = new Wilddog("https://hohosecretchat.wilddogio.com/ChatMessage");
 				
+				// 添加对房间节点的监听
+				var url = "https://hohosecretchat.wilddogio.com/ChatMessage/" + localStorage.roomid;
+				var room = new Wilddog(url);
+				
+				
+				// 将发送的数值显示到定义好的list列表div中
+				var msgList = document.getElementById("msg-list");
+
 				// 点击发送按钮时的处理事件
 				send.addEventListener('tap', function(){
 					var myDate = new Date();
@@ -171,12 +179,17 @@
 						}
 					);
 					
-					// 将发送的数值显示到定义好的list列表div中
-					var msgList = document.getElementById("msg-list");
-					msgList.innerHTML += getInertHTML(nickname_val, myTime, msg_text_val);
+					// 取消重复插入
+//					msgList.innerHTML += getInertHTML(nickname_val, myTime, msg_text_val);
+//					
+//					msg_text_val.value = "";
 					
-					msg_text_val.value = "";
-					
+				});
+				
+				room.on('child_added', function(snapshot){
+					console.log(JSON.stringify(snapshot.val()));
+					msg_list.innerHTML += getInertHTML(snapshot.val().name, snapshot.val().time, snapshot.val().content);
+					msg_text.value = "";
 				});
 				
 				function getInertHTML(username, time, content){
