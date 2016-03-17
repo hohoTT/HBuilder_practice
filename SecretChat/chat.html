@@ -6,6 +6,7 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<title></title>
 		<link href="css/mui.min.css" rel="stylesheet" />
+		<script src = "https://cdn.wilddog.com/js/client/current/wilddog.js" ></script>
 		<style>
 			html,
 			body {
@@ -87,9 +88,9 @@
 		</header>
 		<div class="mui-content">
 			<div class="msg-box">
-				<p><h5 id="nickname_label">666</h5></p>
+				<p><h5 id="nickname_label"></h5></p>
 				<input type="hidden" name="nickname" id="nickname" />
-				<p><h5 id="roomid_label">999</h5></p>
+				<p><h5 id="roomid_label"></h5></p>
 				<input type="hidden" name="roomid" id="roomid" />
 			</div>
 			<div id='msg-list' class="msg-list">
@@ -100,24 +101,56 @@
 				<textarea id='msg-text' type="text" class='input-text'></textarea>
 			</div>
 			<label for="" class="footer-right">
-				<button type="button" class="mui-btn mui-btn-blue">发送</button>
+				<button type="button" class="mui-btn mui-btn-blue" id="send">发送</button>
 			</label>
 		</footer>
 		<script src="js/mui.min.js"></script>
 		<script>
 			mui.init();
 			mui.plusReady(function(){
+				// 获取当前界面中的元素
 				var nickname = document.getElementById("nickname");
 				var nickname_label = document.getElementById("nickname_label");
 				var roomid = document.getElementById("roomid");
 				var roomid_label = document.getElementById("roomid_label");
 				
+				// 从本地存储中获取数据
+				// 将之前保存的数据进行传值的操作，用于显示当前的用户昵称以及房间名
 				nickname.value = localStorage.nickname;
 				roomid.value = localStorage.roomid;
 				
+				// 设置label标签中的值
 				nickname_label.innerHTML = "hello!" + localStorage.nickname;
 				roomid_label.innerHTML = "当前的房间号：" + localStorage.roomid;
 				
+				// -------------------------------------------------------------
+				// 实现聊天的功能
+				var msg_test = document.getElementById("msg-text");
+				var msg_list = document.getElementById("msg-list");
+				var send = document.getElementById("send");
+				
+				var data = new Wilddog("https://hohosecretchat.wilddogio.com/ChatMessage");
+				
+				// 
+				send.addEventListener('tap', function(){
+					var myDate = new Date();
+					// 设置以时间戳作为为唯一时间
+					var myTime = myDate.getTime();
+					
+					var nickname_val = nickname.value;
+ 					var roomid_val = roomid.value;
+ 					var msg_test_val = msg_test.value;
+					
+					data.child(roomid_val).child(myTime).set(
+						{
+							"name" : nickname_val,
+							"content" : msg_test_val,
+							"time" : myTime
+						}
+					);
+					
+
+				});
 			});
 		</script>
 	</body>

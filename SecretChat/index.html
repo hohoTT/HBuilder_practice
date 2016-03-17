@@ -16,6 +16,7 @@
       		
       		// 
       		enter.addEventListener('tap', function(){
+      			// 首先进行两个判空的操作，以确保数据的传递
       			if(nickname.value.length == 0){
       				plus.nativeUI.toast("昵称不可为空！");
       				return ;
