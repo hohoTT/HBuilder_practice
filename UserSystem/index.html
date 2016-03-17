@@ -12,10 +12,13 @@
     <script type="text/javascript" charset="utf-8">
       	mui.init();
       	mui.plusReady(function(){
+      		// 以下为获取的界面按钮
       		var add = document.getElementById("add");
       		var find = document.getElementById("find");
       		var update = document.getElementById("update");
+      		var delete_btn = document.getElementById("delete");
       		
+      		// 以下为获取的界面中的
   			var usernameobj = document.getElementById("username");
   			var telobj = document.getElementById("tel");
   			
@@ -50,6 +53,16 @@
       			});
       			
       		});
+      		
+      		// 删除用户的事件处理
+      		delete_btn.addEventListener('tap', function(){
+      			var url = "https://hohousersystem.wilddogio.com/user/" + usernameobj.value;
+      			
+      			var wilddog = new Wilddog(url);
+      			
+      			wilddog.remove();
+      		});
+      		
       	});
     </script>
     <style type="text/css">
@@ -77,8 +90,15 @@
 			<button type="button" class="mui-btn mui-btn-primary" id="add">新增用户</button>	    
 			
 			<button type="button" class="mui-btn mui-btn-success" id="find">查找用户</button>	
+	    </div>
+	    
+	    <div class="mui-content-padded" align="center">
+	    	
 			
 			<button type="button" class="mui-btn mui-btn-warning" id="update">修改资料</button>	 
+			
+			<button type="button" class="mui-btn mui-btn-danger" id="delete">删除用户</button>	 
+			
 	    </div>
 	</div>
 </body>
