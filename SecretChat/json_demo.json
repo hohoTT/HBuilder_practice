@@ -1,0 +1,35 @@
+{
+  "chatmessage": {
+    "room1": {
+      "SingleMessage(time)1": {
+        "name": "hohoTT",
+        "content": "HelloWorld",
+        "time": "time1"
+      },
+      "SingleMessage(time)2": {
+        "name": "zhangsan",
+        "content": "ho",
+        "time": "time2"
+      },
+      "SingleMessage(time)3": {
+        "name": "lisi",
+        "content": "hi",
+        "time": "time3"
+      }
+    },
+    "room2": {
+      "SingleMessage(time)": {
+        "name": "hohoTT",
+        "content": "HelloWorld",
+        "time": "time"
+      }
+    },
+    "room3": {
+      "SingleMessage(time)": {
+        "name": "hohoTT",
+        "content": "HelloWorld",
+        "time": "time"
+      }
+    }
+  }
+}
