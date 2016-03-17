@@ -8,6 +8,36 @@
     <link href="css/mui.min.css" rel="stylesheet"/>
     <script type="text/javascript" charset="utf-8">
       	mui.init();
+      	mui.plusReady(function(){
+      		// 获取界面中的元素 
+      		var nickname = document.getElementById("nickname");
+      		var roomid = document.getElementById("roomid");
+      		var enter = document.getElementById("enter");
+      		
+      		// 
+      		enter.addEventListener('tap', function(){
+      			if(nickname.value.length == 0){
+      				plus.nativeUI.toast("昵称不可为空！");
+      				return ;
+      			}
+      			
+      			if(roomid.value.length == 0){
+      				plus.nativeUI.toast("房间号不可为空！");
+      				return ;
+      			}
+      			
+      			// 将得到的信息进行存储
+      			localStorage.nickname = nickname.value;
+      			localStorage.roomid = roomid.value;
+      			
+      			mui.openWindow({
+      				url : "chat.html",
+      				id : "chat"
+      			});
+      			
+      		});
+      		
+      	});
     </script>
 
 	<style type="text/css">
@@ -25,16 +55,16 @@
 	    <form class="mui-input-group">
 	        <div class="mui-input-row">
 	            <label>昵称</label>
-	            <input type="text" class="mui-input-clear" placeholder="请输入昵称">
+	            <input type="text" class="mui-input-clear" placeholder="请输入昵称" id="nickname">
 	        </div>
 	        <div class="mui-input-row">
 	            <label>房间号</label>
-	            <input type="text" class="mui-input-clear" placeholder="请输入房间号">
+	            <input type="text" class="mui-input-clear" placeholder="请输入房间号" id="roomid">
 	        </div>
 	    </form>
 	    
 	    <div class="mui-content-padded" align="center">
-	    	<button type="button" class="mui-btn mui-btn-block mui-btn-blue">进入房间</button>
+	    	<button type="button" class="mui-btn mui-btn-block mui-btn-blue" id="enter">进入房间</button>
 	    </div>
 	</div>
 </body>

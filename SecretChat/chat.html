@@ -64,8 +64,16 @@
 				overflow: auto;
 				background-color: #eaeaea;
 			}
-			#msg-list {
-				height: 100%;
+			
+			.msg-box {
+				height: 50%;
+				overflow: auto;
+				margin-left: 10px;
+				-webkit-overflow-scrolling: touch;
+			}
+			
+			.msg-list {
+				height: 50%;
 				overflow: auto;
 				-webkit-overflow-scrolling: touch;
 			}
@@ -78,7 +86,13 @@
 			<h1 class="mui-title">聊天窗口</h1>
 		</header>
 		<div class="mui-content">
-			<div id='msg-list'>
+			<div class="msg-box">
+				<p><h5 id="nickname_label">666</h5></p>
+				<input type="hidden" name="nickname" id="nickname" />
+				<p><h5 id="roomid_label">999</h5></p>
+				<input type="hidden" name="roomid" id="roomid" />
+			</div>
+			<div id='msg-list' class="msg-list">
 			</div>
 		</div>
 		<footer>
@@ -90,6 +104,22 @@
 			</label>
 		</footer>
 		<script src="js/mui.min.js"></script>
+		<script>
+			mui.init();
+			mui.plusReady(function(){
+				var nickname = document.getElementById("nickname");
+				var nickname_label = document.getElementById("nickname_label");
+				var roomid = document.getElementById("roomid");
+				var roomid_label = document.getElementById("roomid_label");
+				
+				nickname.value = localStorage.nickname;
+				roomid.value = localStorage.roomid;
+				
+				nickname_label.innerHTML = "hello!" + localStorage.nickname;
+				roomid_label.innerHTML = "当前的房间号：" + localStorage.roomid;
+				
+			});
+		</script>
 	</body>
 
 </html>
