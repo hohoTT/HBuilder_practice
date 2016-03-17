@@ -14,7 +14,7 @@
       		var roomid = document.getElementById("roomid");
       		var enter = document.getElementById("enter");
       		
-      		// 
+      		// 点击进入房间按钮的事件处理
       		enter.addEventListener('tap', function(){
       			// 首先进行两个判空的操作，以确保数据的传递
       			if(nickname.value.length == 0){
@@ -31,6 +31,7 @@
       			localStorage.nickname = nickname.value;
       			localStorage.roomid = roomid.value;
       			
+      			// 点击按钮，实现页面的跳转
       			mui.openWindow({
       				url : "chat.html",
       				id : "chat"

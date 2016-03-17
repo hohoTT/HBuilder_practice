@@ -186,18 +186,23 @@
 					
 				});
 				
+				// 实现与云端数据的监听
 				room.on('child_added', function(snapshot){
 					console.log(JSON.stringify(snapshot.val()));
+					
+					// JSON数据的序列化，传入数据到界面中，实现与云端数据的同步
 					msg_list.innerHTML += getInertHTML(snapshot.val().name, snapshot.val().time, snapshot.val().content);
 					msg_text.value = "";
 				});
 				
+				// 添加文本到界面中，实现消息发送时的显示
 				function getInertHTML(username, time, content){
 					var string = "<p class='name'>" + username + "<span class='time'>" + getCurrentTime(time) + "</span></p><br /><p class='content'>" + content + "</p>";
 					
 					return string;
 				}
 				
+				// 转换时间的格式
 				function getCurrentTime(timerstr){
 					var time = new Date(parseInt(timerstr) * 1000);
 					return time.toLocaleString().substr(0, 11) + time.toLocaleTimeString();
