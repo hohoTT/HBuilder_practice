@@ -67,16 +67,34 @@
 			}
 			
 			.msg-box {
-				height: 50%;
+				height: 15%;
 				overflow: auto;
 				margin-left: 10px;
 				-webkit-overflow-scrolling: touch;
 			}
 			
 			.msg-list {
-				height: 50%;
+				height: 85%;
 				overflow: auto;
 				-webkit-overflow-scrolling: touch;
+				margin-left: 12px;
+			}
+			
+			.name{
+				font-size: 16px;
+				color: blue;
+				margin: 0 auto;
+			}
+			
+			.time{
+				font-size: 12px;
+				margin-left: 8px;
+			}
+			
+			.content{
+				font-size: 14px;
+				color: black;
+				margin: 0 auto;
 			}
 		</style>
 	</head>
@@ -94,6 +112,8 @@
 				<input type="hidden" name="roomid" id="roomid" />
 			</div>
 			<div id='msg-list' class="msg-list">
+				<!--<p class="name">Name <span class="time">Time</span></p><br />
+				<p class="content">Content</p>				-->
 			</div>
 		</div>
 		<footer>
@@ -125,32 +145,50 @@
 				
 				// -------------------------------------------------------------
 				// 实现聊天的功能
-				var msg_test = document.getElementById("msg-text");
+				var msg_text = document.getElementById("msg-text");
 				var msg_list = document.getElementById("msg-list");
 				var send = document.getElementById("send");
 				
 				var data = new Wilddog("https://hohosecretchat.wilddogio.com/ChatMessage");
 				
-				// 
+				// 点击发送按钮时的处理事件
 				send.addEventListener('tap', function(){
 					var myDate = new Date();
 					// 设置以时间戳作为为唯一时间
 					var myTime = myDate.getTime();
 					
+					// 获取传入的数值
 					var nickname_val = nickname.value;
  					var roomid_val = roomid.value;
- 					var msg_test_val = msg_test.value;
+ 					var msg_text_val = msg_text.value;
 					
+					// 将获得的数值以节点的形式保存到云端中
 					data.child(roomid_val).child(myTime).set(
 						{
 							"name" : nickname_val,
-							"content" : msg_test_val,
+							"content" : msg_text_val,
 							"time" : myTime
 						}
 					);
 					
-
+					// 将发送的数值显示到定义好的list列表div中
+					var msgList = document.getElementById("msg-list");
+					msgList.innerHTML += getInertHTML(nickname_val, myTime, msg_text_val);
+					
+					msg_text_val.value = "";
+					
 				});
+				
+				function getInertHTML(username, time, content){
+					var string = "<p class='name'>" + username + "<span class='time'>" + getCurrentTime(time) + "</span></p><br /><p class='content'>" + content + "</p>";
+					
+					return string;
+				}
+				
+				function getCurrentTime(timerstr){
+					var time = new Date(parseInt(timerstr) * 1000);
+					return time.toLocaleString().substr(0, 11) + time.toLocaleTimeString();
+				};
 			});
 		</script>
 	</body>
