@@ -1,0 +1,30 @@
+{
+  "index.html": {
+    "resources": [
+      "js/mui.min.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "list_android.html",
+      "img/icons/logo-bar.png"
+    ],
+    "refer": [
+      "index-menu.html",
+      "mask.html",
+      "list_android.html",
+      "content.html"
+    ]
+  },
+  "index-menu.html": {
+    "resources": [
+      "fonts/IcoMoon-Free.ttf"
+    ]
+  },
+  "list_android.html": {
+    "resources": [
+      "img/imgload.png",
+      "css/IcoMoon.css",
+      "js/update.js",
+      "js/func.js"
+    ]
+  }
+}

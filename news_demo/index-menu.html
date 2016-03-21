@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<link rel="stylesheet" href="css/mui.min.css">
+	<link rel="stylesheet" href="css/IcoMoon.css">
+	<script src="js/mui.min.js"></script>
+	<script src="js/func.js"></script>
+	<script src="js/update.js"></script>
+	<style type="text/css">
+		html,body{width:100%;background-color: #009bff;}
+		.white{color:#fff;}
+		.mui-bar{position:fixed;right:0;left:0;z-index:10;padding-right:10px;padding-left:10px;height:44px;border-bottom:0;background-color:#009bff;backface-visibility:hidden;}
+		.mui-bar-nav{box-shadow: none;top:0;}
+		p{text-indent: 22px;}
+        
+        .icon{
+            display: inline-block;
+            font-size: 32px;
+            font-family: 'ios7-icon';
+            margin-right: 0px;
+            -webkit-text-rendering: geometricPrecision;
+            -moz-text-rendering: geometricPrecision;
+            -ms-text-rendering: geometricPrecision;
+            -o-text-rendering: geometricPrecision;
+            text-rendering: geometricPrecision;
+            -webkit-font-smoothing: antialiased;
+            -moz-font-smoothing: antialiased;
+            -ms-font-smoothing: antialiased;
+            -o-font-smoothing: antialiased;
+            font-smoothing: antialiased;
+        }
+		
+		.mui-content{background-color:#009bff;}
+		.mui-content > .mui-table-view:first-child{margin-top:0px;}
+		
+		.mui-grid-view.mui-grid-9 .mui-media .mui-icon{font-size:1.6em;}
+		.mui-table-view:after{background-color:#0a88d9;}
+        .mui-grid-view.mui-grid-9{background-color:#007dce;}
+        .mui-grid-view.mui-grid-9 .mui-media{color: #fff;}
+        .mui-grid-view.mui-grid-9 .mui-table-view-cell{border-top:1px solid #0a88d9;border-left:1px solid #0a88d9;}
+        .mui-grid-view.mui-grid-9 .mui-table-view-cell .mui-media-body{color: #fff;}
+        
+        .mui-grid-view.mui-grid-9 .mui-table-view-cell.mui-active{background-color:#009bff;}
+        
+        .mui-table-view-inverted{background-color:#009bff;margin-top:15px;margin-left:-40px;}
+        .mui-table-view-inverted .mui-table-view-cell::after{height:0px;}
+        .mui-table-view-inverted .mui-table-view-cell.mui-active{background-color:#007dce;}
+        .mui-table-view-chevron .mui-table-view-cell > a:not(.mui-btn).mui-active{background-color:#009bff;}
+        
+        .mui-title img{height:26px;margin-top:9px;}
+        .mui-media a{font-size:22px}
+	</style>
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav first_p_menu">
+		<h1 class="mui-title white" id="0"><img src="img/icons/logo-bar.png"/></h1>
+		<span id="close-btn" class="mui-icon mui-icon-close-filled mui-pull-right white"></span>
+	</header>
+	<div class="mui-content">
+		<ul class="mui-table-view mui-grid-view mui-grid-9" id="menu-nav" loadinit="no"></ul>
+        <ul class="mui-table-view-inverted">
+			<!--li class="mui-table-view-cell">
+				<a href="#" id="menu-set">
+					<span class="mui-icon icon" style="font-size:15px;">&#61886</span> 设置
+				</a>
+			</li-->
+			<li class="mui-table-view-cell" id="clearcache">
+				<span class="IcoMoon icon-bin" style="font-size:15px;"></span> 清除缓存
+			</li>
+			<li class="mui-table-view-cell" id="refreshver">
+				<span class="IcoMoon icon-loop2" style="font-size:15px;"></span> 软件更新
+			</li>
+			<li class="mui-table-view-cell">
+				<span class="IcoMoon icon-info" style="font-size:15px;padding-right:4px;"></span><span id="version"></span> 
+			</li>
+		</ul>
+	</div>
+	<script type="text/javascript" charset="utf-8">
+		mui.init({
+            swipeBack:false,
+            gestureConfig:{
+				longtap:true
+			}
+        });
+		//var CateInfo = [{"name": "首页","id": 0,"icon":""},{"name": "政策","id": 1,"icon":"&#61769"},{"name": "民生","id": 2,"icon":"&#61932"},{"name": "突发","id": 3,"icon":"&#61871"},{"name": "人物","id": 4,"icon":"&#61887"},{"name": "客厅","id": 5,"icon":"&#61704"},{"name": "段子","id": 6,"icon":"&#61854"},{"name":"世相","id":7,"icon":"&#61862"},{"name": "发现","id": 8,"icon":"&#61728"},{"name": "定格","id": 9,"icon":"&#61765"}];
+		var CateInfo = null;
+		var list=null,index=null,mask=null;
+		mui.plusReady(function () {
+			index = plus.webview.currentWebview().opener();//获取当前Webview窗口的创建者——主页面webview引用,此句也可写作 index = plus.webview.getLaunchWebview();
+			list = plus.webview.getWebviewById("list");
+			mask = plus.webview.getWebviewById("mask");
+			menuinit();
+			//版本
+			document.getElementById('version').innerHTML = '当前版本: '+plus.runtime.version;
+			//长按显示系统信息
+			document.getElementById('version').addEventListener('longtap',function(e){
+				var btnArray = ['复制','取消'];
+				var info = getPushInfo();
+			  	mui.confirm(info,'',btnArray,function(e){
+			  		if(e.index==0){
+			  			//获取剪切板 andriod专用
+			  			var Context = plus.android.importClass("android.content.Context");
+						var main = plus.android.runtimeMainActivity();
+						var clip = main.getSystemService(Context.CLIPBOARD_SERVICE);
+						plus.android.invoke(clip,"setText",info);
+			  		}
+			  	});
+			});
+			//清除缓存
+			document.getElementById('clearcache').addEventListener('tap',function(e){
+				plus.nativeUI.showWaiting( "清除中..." );
+				clearStorage();//清除全部缓存
+				setTimeout( function(){
+					plus.nativeUI.closeWaiting();
+				},1500);
+			});
+			//软件更新
+			document.getElementById('refreshver').addEventListener('tap',function(e){
+					//软件版本更新检查
+					AppUpdate.initUpdate(false);//手动方式
+				});
+		})
+		
+		function getPushInfo(){
+		    var info = plus.push.getClientInfo();
+		    var content = '';
+		    content += "指闻客户端推送接口信息：\n";
+		    content += "token: "+info.token + "\n";
+		    content += "clientid: "+info.clientid + "\n";
+		    content += "appid: "+info.appid + "\n";
+		    content += "appkey: "+info.appkey + "\n";
+		    return content;
+		}
+		
+		//导航初始化
+		function menuinit(){
+			var node = mui('#menu-nav');
+			if(node[0].getAttribute('loadinit') == "yes") return;
+			var cache_name = api +'_'+mui.param({m:'news',action:'category'});//缓存名称
+			CateInfo = eval('('+ plus.storage.getItem(cache_name) +')');
+			CateInfo = CateInfo.category;
+			var html = '';
+			var len = CateInfo.length;
+			if(len > 9){len = 9;}
+        	for(var i=0;i<len;i++){
+        		//去掉发现 加入首页
+        		//if(CateInfo[i].name == '发现') continue;
+        		if(CateInfo[i].name == '指闻') CateInfo[i].name = '首页';
+        		html += '<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3" data-id="'+ i +'"><a href="#" id="'+ CateInfo[i].id +'"><span class="IcoMoon '+ CateInfo[i].icon +'"></span><div class="mui-media-body">'+ CateInfo[i].name +'</div></a></li>';	
+        	}
+        	node[0].innerHTML = html;
+        	node.on('tap', 'a', function(){
+        		mask.show();//关闭菜单时，在最上层增加一层透明webview，防止菜单关闭动画过程中滑动触发打开菜单事件。动画结束后隐藏
+        		mui.fire(index,"remove_zhezhao");
+				mui.fire(list,"remove_zhezhao");
+				var id = this.id;
+				var title = this.innerText;
+				if(id==0){title = '<img src="img/icons/logo-bar.png"/>'}  //变“首页”为“指闻”
+				mui.fire(index,'updateHeader',{title:escape(title),showMenu:false});//转义汉字
+				mui.fire(list,'updateHeader',{id:id});//自定义事件 通过导航切换频道list  div 显隐
+				//关闭遮罩；主窗体开始侧滑；
+				index.setStyle({
+					mask:'none',
+					left: '0',
+					transition: {
+						duration: 300
+					}
+				});
+				//等动画结束后，隐藏菜单webview，节省资源；
+				setTimeout(function () {
+					plus.webview.currentWebview().hide();
+					mask.hide();
+				},300);	
+			});
+			node[0].setAttribute('loadinit','yes');//设置信号  初始化一次之后不再初始化
+		}
+		
+		//点击“header”处理逻辑——列表首页
+		mui('.first_p_menu').on('tap', 'h1', function() {
+			mask.show();
+			var id = this.id;
+			var title ='<img src="img/icons/logo-bar.png"/>';
+			var setting=plus.webview.getWebviewById('setting');
+			mui.fire(index,'updateHeader',{title:escape(title),showMenu:false});
+			mui.fire(list,'updateHeader',{id:id});
+			index.setStyle({
+				mask:'none',
+				left: '0',
+				transition: {
+					duration: 300
+				}
+			});
+			//等动画结束后，隐藏菜单webview，节省资源；
+			setTimeout(function () {
+				plus.webview.currentWebview().hide();
+				mask.hide();
+			},300);	
+			mui.fire(index,"remove_zhezhao");
+			mui.fire(list,"remove_zhezhao");
+		});
+		
+		//点击“setting”按钮处理逻辑
+		/*document.getElementById("menu-set").addEventListener("tap",function(){
+			var setting=plus.webview.getWebviewById('setting');
+			if(!setting){
+				setting=plus.webview.create('setting.html', 'setting',{zindex:1});//
+			}
+			setting.show('slide-in-right', 150);
+			//等动画结束后，隐藏菜单webview，节省资源；
+			setTimeout(function () {
+				close();
+			},100);
+		});*/
+	
+		/* 关闭侧滑菜单*/
+		function close() {
+			mask.show();
+			mui.fire(mui.currentWebview.opener(),"menu:close");
+			mui.fire(list,"remove_zhezhao");
+			mask.hide();
+		}
+		
+		//点击“关闭侧滑菜单”按钮处理逻辑
+		document.getElementById("close-btn").addEventListener("tap",close);
+		//在android4.4.2中的swipe事件，需要preventDefault一下，否则触发不正常
+		window.addEventListener('dragleft', function(e) {
+			e.detail.gesture.preventDefault();
+		});
+		//监听左滑事件，若菜单已展开，左滑要关闭菜单；
+		window.addEventListener("swipeleft",function (e) {
+			if(Math.abs(e.detail.angle)>170){
+				close();						
+			}
+		});
+	</script>
+</body>
+</html>

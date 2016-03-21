@@ -1,0 +1,62 @@
+{"id":"H5D67F63B","name":"指闻","version":{"name":"0.1.2","code":192},"description":"首屈一指 好新闻","icons":{"72":"icon.png"},"launch_path":"index.html","developer":{"name":"指闻开发团队","email":"fanxiu113@cnwest.com","url":"http:\/\/www.cnwest.com\/"},"permissions":{"Cache":{"description":"管理应用缓存"},"Console":{"description":"跟踪调试输出日志"},"Downloader":{"description":"文件下载管理"},"Events":{"description":"应用扩展事件"},"File":{"description":"访问本地文件系统"},"Invocation":{"description":"Javascript桥"},"Storage":{"description":"管理应用本地数据"},"UI":{},"Runtime":{"description":"访问运行期环境"},"XMLHttpRequest":{"description":"跨域网络访问"},"Share":{"description":"管理社交分享插件"},"Statistic":{"description":"管理统计插件"},"push":{"description":"管理推送消息插件"},"Webview":{},"NativeUI":{},"Navigator":{}},"plus":{"splashscreen":{"autoclose":false,"waiting":false},"runmode":"liberate","signature":"Sk9JTiBVUyBtYWlsdG86aHIyMDEzQGRjbG91ZC5pbw=="},
+	"dependencies": {
+		"pages": {
+			"index.html": {
+				"resources": [
+					"js/mui.min.js",
+					"fonts/mui.ttf",
+					"css/mui.min.css",
+					"list_android.html",
+					"img/icons/logo-bar.png"
+				],
+				"refer": [
+					"index-menu.html",
+					"mask.html",
+					"content.html"
+				],
+				"priority": 0
+			},
+			"index-menu.html": {
+				"resources": [
+					"fonts/IcoMoon-Free.ttf"
+				],
+				"refer": [],
+				"priority": 0
+			},
+			"list_android.html": {
+				"resources": [
+					"img/imgload.png",
+					"css/IcoMoon.css",
+					"js/update.js",
+					"js/func.js"
+				],
+				"refer": [],
+				"priority": 0
+			}
+		},
+		"idle": {
+			"resources": [
+				"img/imgload_banner.png",
+				"img/splashscreen/480_762.png",
+				"img/icons/48.png",
+				"img/splashscreen/640_1136.png",
+				"bak/comment.html",
+				"img/splashscreen/640_960.png",
+				"css/mui.css",
+				"img/splashscreen/1242_2208.png",
+				"bak/subcomment.html",
+				"img/splashscreen/750_1334.png",
+				"img/icons/144.png",
+				"img/splashscreen/320_442.png",
+				"img/splashscreen/320_480.png",
+				"img/icons/512.png",
+				"img/splashscreen/720_1242.png",
+				"img/icons/72.png",
+				"bak/setting.html",
+				"img/splashscreen/1080_1882.png",
+				"img/icons/96.png",
+				"js/mui.js",
+				"img/splashscreen/240_282.png"
+			]
+		}
+	}}

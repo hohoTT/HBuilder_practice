@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link rel="stylesheet" href="css/IcoMoon.css">
+		<script src="js/mui.min.js"></script>
+		<script src="js/func.js"></script>
+		<script type="text/javascript" src="js/update.js" ></script>
+		<style>
+			html,body {background-color: #f6f6f6;}
+			.mui-content>div{display:none;}
+			.mui-content>div:first-child{display:block;} 
+            .icon{
+                display: inline-block;
+                font-size: 18px;
+                line-height:20px;
+                font-family: 'ios7-icon';
+                margin-right: 2px;
+                -webkit-text-rendering: geometricPrecision;
+                -moz-text-rendering: geometricPrecision;
+                -ms-text-rendering: geometricPrecision;
+                -o-text-rendering: geometricPrecision;
+                text-rendering: geometricPrecision;
+                -webkit-font-smoothing: antialiased;
+                -moz-font-smoothing: antialiased;
+                -ms-font-smoothing: antialiased;
+                -o-font-smoothing: antialiased;
+                font-smoothing: antialiased;
+            }
+			/*列表页*/
+			.news-con {overflow:hidden;margin:10px 15px 15px 15px;padding:0px;border-bottom: #D8D8D8 1px solid;}
+			.news-con h3{font-size:18px; line-height:30px;color:#009bff; margin-bottom:-3px; font-weight: 650;}
+			.news-con h3 .IcoMoon{margin-right:8px;}
+			.news-con h3 .IcoMoon span{font-weight:bold;}
+			.news-con h2{font-size:22px; line-height:34px;color:#333; white-space: 1px; margin-bottom: 10px; font-weight: 650; }
+			.news-con .mui-btn-primary{font-size:14px; font-weight:bold;color:#fff; height:30px;line-height:30px;width:60px;}
+			.news-con .mui-btn-primary a{color:#fff; }
+			
+			.news-nr {width:100%;padding-bottom:10px;margin:0;}
+			.news-nr ul.news-list{padding-top:0px;-webkit-padding-start:0px;}
+			.news-nr ul.news-list li{list-style:none;line-height:24px; margin-bottom:5px;font-size:14px;color:#333;white-space: normal;position:relative;padding-left:70px;}
+			.news-nr ul.news-list li span.gray {color:#999;}
+			.news-nr ul.news-list li span.mui-btn{font-size: 12px !important; border-radius:10px; text-align:center;height:22px;padding-top:0px;line-height:20px;margin-right:8px;float:left;position: absolute; top: 0px; left:0px; width:60px;}
+			.news-nr ul.news-list li span.mui-btn:active{background-color:#f6f6f8;border:1px solid #CCC;}/*解决按钮灰框*/
+
+			.top-pic{position:relative;width:100%;background:#f6f6f8;overflow:hidden; margin-bottom:10px;}
+			/*.top-pic-m8{margin:0 8px;}*/
+			.top-pic-img img{width:100%;height:auto;}
+			.top-pic p {font-size:14px;font-weight:bold;color:#000;text-align:left;white-space:normal;padding:0px 8px;}
+			.top-pic p a{color:#fff;}
+			
+			.data-load{color:#999;text-align:center;}
+			.mui-scroll{background-color:#f6f6f8;}
+			.mui-content{background-color:#f6f6f8;}
+			/*遮罩*/
+			#shadow_all{width:100%;height:100%;bottom:0; left:0;background:#000;position:fixed;z-index:1000;opacity:0.7;}
+			
+			.newsHide{display:none;}
+			.newsShow{display:block;}
+		</style>
+	</head>
+	<body>
+		<!--下拉刷新容器-->
+		<div id="pullrefresh" class="mui-content mui-scroll-wrapper">
+			<div class="mui-loading" style="margin-top:10px;"><div class="mui-spinner"></div></div>
+			<!--div class="mui-scroll" id="0">
+				<div class="top-pic" id="topic">
+					<a href="#">
+						<div class="top-pic-img"><img src="images/muwu.jpg"></div>
+					</a>
+					<div class="top-pic-title"><p>这是顶部推荐位</p></div>
+				</div>
+				<div class="news-con">
+					<h3><span class="mui-icon mui-icon-info"></span>时政</h3>
+					<h2><a href="#" target="_blank">习总书记在考察城墙时称赞西安城墙是世界级宝贝</a></h2>
+					<div class="top-pic" >
+						<div class="top-pic-img">
+							<a href="" id="1"><img src="images/img8.jpg"></a>
+						</div>
+					</div>
+					<div class="news-nr">
+						<ul class="news-list">
+							<li><span class="mui-btn gray">热点</span><a href="">7大7大仿盛大色7大高发地</a></li>
+							<li><span class="mui-btn gray">百科</span><a href="">7大高发地盛大仿盛大色7大高发地</a></li>
+							<li><span class="mui-btn gray">社会</span><a href="">7大高发地盛大仿盛大色7大高发地</a></li>
+							<li><span class="mui-btn gray">也许</span><a href="">仿大高发地盛大仿盛大色7大高发地</a></li>
+						</ul>
+					</div>
+				</div>
+			</div-->
+		</div>
+		<div id="shadow_all" style="display:none;"></div>
+		<script>
+			//左滑关闭侧滑菜单
+        	var index = null;//主页面
+        	var id = 0;//初始div id
+        	var max_newsid = {};//当前栏目最大新闻id;
+            var min_newsid = {};//当前栏目最小新闻id;
+			function openMenu () {
+				!index&&(index = mui.currentWebview.parent());
+				mui.fire(index,"menu:open");	
+				setTimeout(function () {
+					document.getElementById('shadow_all').style.display='block';
+				},300);	
+			}
+			
+			function closeMenu () {
+				!index&&(index = mui.currentWebview.parent());
+				mui.fire(index,"menu:close");	
+				setTimeout(function () {
+					document.getElementById('shadow_all').style.display='none';
+				},300);	
+			}
+	
+			//在android4.4.2中的swipe事件，需要preventDefault一下，否则触发不正常
+			window.addEventListener('dragright', function(e) {
+				e.detail.gesture.preventDefault();
+			});
+			window.addEventListener('dragleft', function(e) {
+				e.detail.gesture.preventDefault();
+			});
+	
+			//监听右滑事件，若侧滑菜单未显示，右滑要显示菜单；
+			//window.addEventListener("swiperight",openMenu);//容易出现斜滑状况
+			window.addEventListener("swiperight",function(e){
+				//alert('Y' + e.detail.deltaY);
+				//alert('X' + e.detail.deltaX);
+				//alert(e.detail.direction);
+				if(e.detail.angle >= -20 && e.detail.angle <= 20 && e.detail.deltaX > 70){
+					openMenu();
+				}
+			});
+				
+			//监听左滑事件，若侧滑菜单未显示，左滑要显示菜单；
+			window.addEventListener("swipeleft",closeMenu);
+			window.addEventListener('remove_zhezhao', function(e) {
+				setTimeout(function () {
+					document.getElementById('shadow_all').style.display='none';
+				},300);	
+			});
+			window.addEventListener('add_zhezhao', function(e) {
+				setTimeout(function () {
+					document.getElementById('shadow_all').style.display='block';
+				},300);	
+			});
+			
+			//var CateInfo = [{"name": "首页","id": 0},{"name": "政策","id": 1},{"name": "民生","id": 1},{"name": "突发","id": 2},{"name": "人物","id": 4},{"name": "客厅","id": 5},{"name": "段子","id": 6},{"name":"世相","id":7},{"name": "发现","id": 8},{"name": "定格","id": 9}];
+			var CateInfo = null;
+            //var index =  plus.webview.getLaunchWebview(); 
+            //creat_div_frame();
+            mui.plusReady(function(){
+            	index =  plus.webview.getLaunchWebview();   
+            	
+            	//时间判断 start 没多少天执行一次
+				var lastcheck = plus.storage.getItem('appinfo_update');//存储栏目信息的更新时间
+				var dc = parseInt(lastcheck);//不存在就是 NaN
+				var dn = (new Date()).getTime();
+				if(dn-dc >= 604800000){//未超过上次检测间隔，不需要进行服务器更新 单位为ms,7天为7*24*60*60*1000=604800000, 24
+					plus.storage.setItem('appinfo_update', (new Date()).getTime().toString());//设置本次更新时间
+					//清除全部缓存数据
+					clearStorage();
+				}
+				//栏目时间判断结束 end
+            	getApiData(api,{m:'news',action:'category'},function(data){
+					CateInfo = data.category;
+					creat_div_frame(function(){
+						pushInit();
+					});
+            	},null,86400);
+            	
+            	//软件版本更新检查
+				AppUpdate.initUpdate(true);//自动方式
+            });
+
+			//创建div框架
+            function creat_div_frame(callback){
+            	var html = '';
+            	var len = CateInfo.length;
+            	for(var i=0;i<len;i++){
+            		html += '<div class="mui-scroll" id="'+ CateInfo[i].id +'" loadinit="no"><div class="mui-loading" style="margin-top:10px;"><div class="mui-spinner"></div></div></div>';            		
+            	}
+            	var node = document.getElementById('pullrefresh');
+            	node.innerHTML = html;
+            	var first_title = '<img src="img/icons/logo-bar.png"/>';
+            	mui.fire(index,'updateHeader',{title:first_title});//更改title
+            	
+            	//下拉刷新初始化
+				setTimeout(function() {
+					mui.init({
+						swipeBack: false,
+						pullRefresh: {
+							container: '#pullrefresh',
+							down: {
+								callback: pulldownRefresh
+							},
+							up: {
+								contentrefresh: '正在加载...',
+								callback: pullupRefresh
+							}
+						}
+					});
+					//关闭启动页面
+					plus.navigator.closeSplashscreen();
+				},300);
+            	
+            	creat_div_content(0,callback);//初始化首页
+            	
+				var list = document.querySelectorAll('.mui-scroll')
+				//获取从侧滑菜单点所得div id
+				window.addEventListener("updateHeader", function(e) {
+					id = e.detail.id;
+					//隐藏所有.mui-scroll
+					if (list) {
+						for (var i = 0; i < list.length; i++) {
+							list[i].style.display = 'none';
+						}
+					}
+					//只显示当前div
+					document.getElementById(id).style.display="block";
+					creat_div_content(id);
+				});
+            }
+            
+            //取得栏目图标信息
+            function getCateInfo(cateid){
+            	var content = {"name":"","icon":""};
+            	var len = CateInfo.length;
+            	for(var i=0;i<len;i++)
+            	{
+            		if(CateInfo[i].id == cateid){
+            			content.icon = CateInfo[i].icon;
+            			content.name = CateInfo[i].name;
+            			break;
+            		}
+            	}
+            	return content;
+            }
+			
+			//加载每个div内容
+			 function creat_div_content(curNumber){
+            	/*var node = document.getElementById(curNumber);
+            	if(node.getAttribute('loadinit') == "yes") return;*/
+            	var node = mui('#'+curNumber);
+            	var curItem = node[0];
+            	if(curItem.getAttribute('loadinit') == "yes") return;
+            	var callback = arguments[1];
+            	if(callback && curNumber == 0 && typeof callback == "function"){
+        			callback();
+    			}
+            	//初始化内容区域 ajax获得数据
+            	//http://test.cloud.cnwest.com/api1.0/?m=news&action=newslist&cateid=0   //cateid栏目id
+            	//'cateid':CateInfo[curNumber].id
+            	getApiData(api,{m:'news',action:'newslist','cateid':curNumber},function(data){
+            		//CateInfo[curNumber].max_newsid = 0;//设置最大新闻id;
+            		//CateInfo[curNumber].min_newsid = 0;//设置最小新闻id;
+            		curid_maxid = 0;
+            		curid_minid = 0;
+            		//alert(JSON.stringify(data));
+            		
+            		//增加置顶专用字段部分 start sticklist
+            		var htmldata = data.sticklist;
+            		var len = htmldata.length;
+            		var topic_id = [];//顶部推荐的id列表
+            		var topic_html = '';//顶部推荐区域内容
+            		for(var i=0;i<len;i++){
+            			if(htmldata[i].member == undefined || htmldata[i].member.length == 0) continue;//去除事件成员为空的单元
+            			topic_id[htmldata[i].newsid] = true;//储存推荐位的新闻id 便于下次进一步判断
+            			var cate_arr = getCateInfo(htmldata[i].cateid);
+            			topic_html += '<div id="topic" class="news-con data-newsid-'+ htmldata[i].newsid +'">';
+            			topic_html += '<h3><span class="Cate-tap IcoMoon '+ cate_arr.icon +'" data-id="'+ htmldata[i].cateid +'"><span> '+ cate_arr.name +'</span></span></h3><h2 class="data-tap" data-id="'+ htmldata[i].member[0].openid +'">'+ htmldata[i].member[0].title +'</h2>';
+            			
+            			if(htmldata[i].thumb != "" && htmldata[i].thumb !=null ){
+            				//alert(htmldata[i].thumb);
+            				topic_html += '<div class="top-pic data-tap" data-id="'+ htmldata[i].member[0].openid +'"><div class="top-pic-img top-pic-m8"><img data-src="'+ htmldata[i].thumb +'" src="img/imgload.png" class="con-img"></div></div>';
+            			}
+            			if(htmldata[i].member.length>1){
+            				//alert(htmldata[i].member.length);
+            				topic_html += '<div class="news-nr"><ul class="news-list">';
+            				for(var j=1;j<htmldata[i].member.length;j++)
+            				{
+            					topic_html += '<li><span class="mui-btn gray">'+ htmldata[i].member[j].functag +'</span><span class="data-tap" data-id="'+ htmldata[i].member[j].openid +'">'+ htmldata[i].member[j].title +'</span></li>';
+            				}
+            				topic_html += '</ul></div>';
+            			}
+            			topic_html += '</div>';
+            		}
+            		//增加置顶专用字段部分 end
+            		
+            		var htmldata = data.newslist;
+            		var len = htmldata.length;
+            		if(len<1) return;//返回为空的初始化接口
+            		
+            		var html = '';
+            		for(var i=0;i<len;i++){
+            			//设置newsis的 最大值和最小值
+            			curid_maxid = Math.max(curid_maxid,htmldata[i].newsid);//设置最大新闻id;
+            			if(curid_minid == 0 && htmldata[i].stick != 1) curid_minid = htmldata[i].newsid;
+            			if(htmldata[i].stick != 1) curid_minid = Math.min(curid_minid,htmldata[i].newsid);//设置最小新闻id;
+            			
+            			if(htmldata[i].member == undefined || htmldata[i].member.length == 0) continue;//去除事件成员为空的单元
+            			//顶部推荐区域
+            			var cate_arr = getCateInfo(htmldata[i].cateid);
+            			/*if(htmldata[i].stick == 1){
+            				if(topic_html=='' && htmldata[i].member[0] != undefined && (htmldata[i].thumb!="" && htmldata[i].thumb!=null)){
+            					//设置头图
+            					topic_html = '<div id="topic" class="news-con data-newsid-'+ htmldata[i].newsid +'"><h3 class="data-tap" data-id="'+ htmldata[i].member[0].openid +'"><span class="IcoMoon '+ cate_arr.icon +'"></span>'+ cate_arr.name +'</h3><h2 class="data-tap" data-id="'+ htmldata[i].member[0].openid +'">'+ htmldata[i].member[0].title +'</h2><div class="top-pic data-tap" data-id="'+ htmldata[i].member[0].openid +'"><div class="top-pic-img top-pic-m8"><img data-src="'+ htmldata[i].thumb +'" src="img/imgload.png" class="con-img"></div></div>';
+            				}
+            				if(htmldata[i].member.length>1){
+	            				topic_html += '<div class="news-nr"><ul class="news-list">';
+	            				for(var j=1;j<htmldata[i].member.length;j++)
+	            				{
+	            					topic_html += '<li><span class="mui-btn gray">'+ htmldata[i].member[j].functag +'</span><span class="data-tap" data-id="'+ htmldata[i].member[j].openid +'">'+ htmldata[i].member[j].title +'</span></li>';
+	            				}
+	            				topic_html += '</ul></div>';
+	            			}
+            				topic_html += '</div>';
+            				continue;
+            			}*/
+            			/*var topic_flag = '';
+            			if(htmldata[i].stick == 1){topic_flag=' id="topic" ';}*/
+            			//顶部推荐区域end
+            			
+            			//新闻列表区域
+            			
+            			html += '<div class="news-con data-newsid-'+ htmldata[i].newsid +' '+ (topic_id[htmldata[i].newsid]==true?'newsHide':'') +'">';
+            			//alert( htmldata[i].truenewsid);
+            			html += '<h3><span class="Cate-tap IcoMoon '+ cate_arr.icon +'" data-id="'+ htmldata[i].cateid +'"><span> '+ cate_arr.name +'</span></span></h3><h2 class="data-tap" data-id="'+ htmldata[i].member[0].openid +'">'+ htmldata[i].member[0].title +'</h2>';
+            			
+            			if(htmldata[i].thumb != "" && htmldata[i].thumb !=null ){
+            				//alert(htmldata[i].thumb);
+            				html += '<div class="top-pic data-tap" data-id="'+ htmldata[i].member[0].openid +'"><div class="top-pic-img top-pic-m8"><img data-src="'+ htmldata[i].thumb +'" src="img/imgload.png" class="con-img"></div></div>';
+            			}
+            			if(htmldata[i].member.length>1){
+            				html += '<div class="news-nr"><ul class="news-list">';
+            				for(var j=1;j<htmldata[i].member.length;j++)
+            				{
+            					html += '<li><span class="mui-btn gray">'+ htmldata[i].member[j].functag +'</span><span class="data-tap" data-id="'+ htmldata[i].member[j].openid +'">'+ htmldata[i].member[j].title +'</span></li>';
+            				}
+            				html += '</ul></div>';
+            			}
+            			html += '</div>';
+            		}
+            		//alert(html);
+            		//alert(curid_maxid);
+            		//alert(curid_minid);
+            		max_newsid[id]=curid_maxid;
+            		min_newsid[id]=curid_minid;
+            		//alert(JSON.stringify(max_newsid));
+            		//alert(JSON.stringify(min_newsid));
+            		
+            		html = topic_html + html ;
+            		curItem.innerHTML = html;
+            		
+            		//加载图片
+            		setTimeout(function(){
+            			var node_img = curItem.querySelectorAll('.con-img');
+            			for(var i=0;i<node_img.length;i++)
+            			{
+            				node_img[i].src = http_url + node_img[i].getAttribute('data-src');
+            				img_map[node_img[i].getAttribute('data-src')] = true;//储存已加载图片的网址
+            			}
+            		},200);
+            		
+            		//绑定打开内容页事件
+            		node.on('tap', '.data-tap', function(e){
+						var self = this;
+						//alert(self.getAttribute('data-id'));
+						var openid = self.getAttribute('data-id');
+						openContent(openid);//打开内容页
+            		});
+            		node.on('tap', '.Cate-tap', function(e){
+						var self = this;
+						var title = this.innerText;
+						var list = document.querySelectorAll('.mui-scroll')
+						var Cateid = self.getAttribute('data-id');
+						//隐藏所有.mui-scroll
+						if (list) {
+							for (var i = 0; i < list.length; i++) {
+								list[i].style.display = 'none';
+							}
+						}
+						//只显示当前div
+						document.getElementById(Cateid).style.display="block";
+						creat_div_content(Cateid);
+						mui.fire(index,'updateHeader',{title:escape(title),showMenu:false});//转义汉字
+            		});
+	        	
+	            	//初始化内容区域 end
+	            	curItem.setAttribute('loadinit','yes');//设置信号  初始化一次之后不再初始化
+            	},null,300);
+            }
+			 
+			 //推送初始化
+            function pushInit(){
+            	//推送设置 start
+				// 监听点击消息事件
+				plus.push.addEventListener( "click", function(msg){
+					//判断是从本地创建还是离线推送的消息
+					switch( msg.payload ){
+						case "LocalMSG":
+						//点击本地创建消息启动
+						break;
+						default:
+						//点击离线推送消息启动
+						if(plus.os.name=="iOS"){
+							var a = eval('('+msg.payload.payload+')');
+							if(a.openid != undefined) openContent(a.openid);
+						}
+						break;
+					}
+				},false);    
+					// 监听在线消息事件
+					plus.push.addEventListener( "receive", function(msg){
+						if(msg.aps){  // Apple APNS message
+									//接收到在线APNS消息
+									/*
+									if(plus.os.name=="iOS"){
+							 			var a = eval('('+msg.payload.payload+')');
+							 			if(a.openid != undefined){
+							 				plus.push.createMessage(msg.content,"LocalMSG",{openid:a.openid});
+							 			}
+							        }
+							        */
+						}else{
+						//接收到在线透传消息
+							if(plus.os.name=="Android"){
+							 	var a = eval('('+msg.payload+')');
+							 	if(a.openid != undefined){
+							 		openContent(a.openid);
+							 	}
+							 }
+						}
+				},false);
+				//推送设置 end
+            }
+            
+            //打开推送的内容页面
+            /*function openPushContent(id){
+            	var content=plus.webview.getWebviewById('content');
+            	if(!content){
+					content=plus.webview.create('content.html', 'content');
+				}
+            	setTimeout(function(){
+					content.evalJS("init("+ id +");");
+					content.show('slide-in-right',300);
+				},200);
+            }*/
+            
+             /*撤除界面上已有的新闻事件版块*/
+	        function removeNewsId(node,removelist)
+	        {
+	        	var len = removelist.length;
+	        	if(len<1) return;
+	        	var nl = null;
+	        	for(var i=0;i<len;i++){
+	        		//alert(removelist[i].newsid);
+	        		if(nl = node.querySelector('.data-newsid-'+ removelist[i].newsid)){
+	        			node.removeChild(nl);
+	        		}
+	        	}
+	        }
+	        
+			/*下拉刷新具体业务实现*/
+			function pulldownRefresh() {
+				if(document.getElementById(id).getAttribute('loadinit') == "no")
+				{mui('#pullrefresh').pullRefresh().endPulldownToRefresh();return;}
+				
+				//alert(id);//alert(JSON.stringify(max_newsid));alert(JSON.stringify(min_newsid));alert(max_newsid[id])
+				getApiData(api,{m:'news',action:'newslist','cateid':id,'type':1,'newsid':max_newsid[id]},function(data){//max_newsid[id]
+		        	//alert(JSON.stringify(data));
+		        	
+		        	var node = document.getElementById(id);
+		        	var refreshdata = data.refreshlist;
+		    		var refresh_len = refreshdata.length;
+		    		var ref_html = '';
+		    		var nl = null;
+		    		var node_img = null;
+		    		var topic_html = '';
+		    		if(node.querySelector('#topic'))
+		    		{
+		    			var node_topic = node.querySelectorAll('#topic');
+		    			for(var i=0;i<node_topic.length;i++)
+		    			{
+		    				node_topic[i].outerHTML = '';
+		    			}
+		    			//node.querySelector('#topic').outerHTML = '';
+		    		}
+		    		
+		    		//刷新当前十条数据
+		    		for(var i=refresh_len-1;i>=0;i--){
+		    			if(refreshdata[i].newsid == null) continue;//跳过newsid错误
+		    			if(refreshdata[i].member == undefined || refreshdata[i].member.length == 0) continue;//去除事件成员为空的单元
+		    			var ref_cate_arr = getCateInfo(refreshdata[i].cateid);
+		    			
+		    			//顶部推荐区域
+		    			/*if(refreshdata[i].stick == 1){
+		    				if(topic_html=='' && refreshdata[i].member[0] != undefined && (refreshdata[i].thumb!="" && refreshdata[i].thumb!=null)){
+		    				//设置头图
+		    				topic_html = '<div id="topic" class="news-con data-newsid-'+ refreshdata[i].newsid +'"><h3 class="data-tap" data-id="'+ refreshdata[i].member[0].openid +'"><span class="IcoMoon '+ ref_cate_arr.icon +'"></span>'+ ref_cate_arr.name +'</h3><h2 class="data-tap" data-id="'+ refreshdata[i].member[0].openid +'">'+ refreshdata[i].member[0].title +'</h2><div class="top-pic data-tap" data-id="'+ refreshdata[i].member[0].openid +'"><div class="top-pic-img top-pic-m8"><img data-src="'+ refreshdata[i].thumb +'" src="img/imgload.png" class="con-img"></div></div>';
+		    				}
+		    				if(refreshdata[i].member.length>1){
+		        				topic_html += '<div class="news-nr"><ul class="news-list">';
+		        				for(var j=1;j<refreshdata[i].member.length;j++)
+		        				{
+		        					topic_html += '<li class="data-tap" data-id="'+ refreshdata[i].member[j].openid +'"><span class="mui-btn gray">'+ refreshdata[i].member[j].functag +'</span>'+ refreshdata[i].member[j].title +'</li>';
+		        				}
+		        				topic_html += '</ul></div>';
+		        			}
+		    				topic_html += '</div>';
+		    				node.querySelector('#topic').outerHTML = topic_html;
+		    				
+		    				//加载图片
+		    				if(node_img = node.querySelector('#topic').querySelector('.con-img')) 
+		    				{node_img.src = http_url + node_img.getAttribute('data-src');}
+		    				continue;
+		    			}*/
+		    			//顶部推荐区域end
+		    			
+		    			//新闻列表区域
+		    			//ref_html = '<div class="news-con data-newsid-'+ refreshdata[i].newsid +'">';
+		    			ref_html = '<h3><span class="Cate-tap IcoMoon '+ ref_cate_arr.icon +'" data-id="'+ refreshdata[i].cateid +'"><span> '+ ref_cate_arr.name +'</span></span></h3><h2 class="data-tap" data-id="'+ refreshdata[i].member[0].openid +'">'+ refreshdata[i].member[0].title +'</h2>';
+		    			
+		    			if(refreshdata[i].thumb != "" && refreshdata[i].thumb !=null ){
+		    				//alert(refreshdata[i].thumb);
+		    				var img_flag = '-add';
+		    				var flag_img_refresh_src='img/imgload.png';
+		    				if(img_map[refreshdata[i].thumb] == true)
+		    				{
+		    					img_flag = '';
+            					flag_img_refresh_src= http_url + refreshdata[i].thumb;
+		    				}
+		    				ref_html += '<div class="top-pic data-tap" data-id="'+ refreshdata[i].member[0].openid +'"><div class="top-pic-img top-pic-m8"><img data-src="'+ refreshdata[i].thumb +'" src="'+flag_img_refresh_src+'" class="con-img'+img_flag+'"></div></div>';
+		    			}
+		    			if(refreshdata[i].member.length>1){
+		    				ref_html += '<div class="news-nr"><ul class="news-list">';
+		    				for(var j=1;j<refreshdata[i].member.length;j++)
+		    				{
+		    					ref_html += '<li><span class="mui-btn gray">'+ refreshdata[i].member[j].functag +'</span><span class="data-tap" data-id="'+ refreshdata[i].member[j].openid +'">'+ refreshdata[i].member[j].title +'</span></li>';
+		    				}
+		    				ref_html += '</ul></div>';
+		    			}
+		    			//ref_html += '</div>';
+		    			//替换现有node
+		    			if(nl = node.querySelector('.data-newsid-'+ refreshdata[i].newsid)){
+		    				nl.innerHTML = ref_html;
+		    				
+		    				nl.classList.remove('newsHide');//去除隐藏显示属性标签
+            				nl.classList.add('newsShow');//让隐藏显示
+		    				//加载图片
+		    				//if(node_img = node.querySelector('.data-newsid-'+ refreshdata[i].newsid).querySelector('.con-img')) 
+		    				//{node_img.src = http_url + node_img.getAttribute('data-src');}
+		        			
+		    			}
+		    			/*else{
+		    				//如果稿件里没有 但刷新列表里存在 说明撤稿后又重新还原了 在这里插入列表中
+		    				//如果置顶 掠过
+		    				//alert(refreshdata[i].truenewsid);
+		    				if(refreshdata[i].stick == 1) continue;//去除所有置顶内容
+		    				
+		    				nl = document.createElement('div');
+		    				nl.className = 'news-con data-newsid-'+ refreshdata[i].newsid;
+		    				nl.innerHTML = ref_html;
+		    				node.insertBefore(nl,node.childNodes[0]);//插入头部
+		    			}*/
+		    		}
+		        		
+		    		//删除撤稿内容
+		    		removeNewsId(node,data.removelist);
+		    		//删除撤稿内容end
+		    		
+		    		//新增稿件
+		        	var htmldata = data.addlist;
+		    		var len = htmldata.length;
+		    		var html ='';
+		    		/*if(len<1){
+		    			//没有更多数据了
+		    			mui('#pullrefresh').pullRefresh().endPulldownToRefresh(); 
+		    			//mui.toast('已经是最新数据了！');
+		    			plus.nativeUI.toast('已经是最新数据了！',{verticalAlign:'top'});
+		    			return;//返回为空的初始化接口
+		    		}*/
+		        		
+		    		var node = document.getElementById(id);
+		    		for(var i=len-1;i>=0;i--){
+		    			max_newsid[id] = Math.max(max_newsid[id],htmldata[i].newsid);//设置最大新闻id;
+		    			if(htmldata[i].member == undefined || htmldata[i].member.length == 0) continue;//去除事件成员为空的单元
+		    			
+		    			//新闻列表区域
+		    			var cate_arr = getCateInfo(htmldata[i].cateid);
+		    			var div = document.createElement('div');
+						div.className = 'news-con data-newsid-'+ htmldata[i].newsid;
+		    			
+		    			var html = '<h3><span class="Cate-tap IcoMoon '+ cate_arr.icon +'" data-id="'+ htmldata[i].cateid +'"><span> '+ cate_arr.name +'</span></span></h3><h2 class="data-tap" data-id="'+ htmldata[i].member[0].openid +'">'+ htmldata[i].member[0].title +'</h2>';
+		    			
+		    			if(htmldata[i].thumb!="" && htmldata[i].thumb!=null){
+		    				html += '<div class="top-pic data-tap" data-id="'+ htmldata[i].member[0].openid +'"><div class="top-pic-img top-pic-m8"><img data-src="'+ htmldata[i].thumb +'" src="img/imgload.png" class="con-img-add"></div></div>';
+		    			}
+		    			if(htmldata[i].member.length>1){
+		    				html += '<div class="news-nr"><ul class="news-list">';
+		    				for(var j=1;j<htmldata[i].member.length;j++)
+		    				{
+		    					html += '<li><span class="mui-btn gray">'+ htmldata[i].member[j].functag +'</span><span class="data-tap" data-id="'+ htmldata[i].member[j].openid +'">'+ htmldata[i].member[j].title +'</span></li>';
+		    				}
+		    				html += '</ul></div>';
+		    			}
+		    			div.innerHTML = html;
+		    			
+		    			//加载图片
+		    			//var node_img = div.querySelector('.con-img');
+		        		//node_img.src = http_url + node_img.getAttribute('data-src');
+		    			
+		    			/*if(table.querySelector('#topic')){
+		    				table.insertBefore(div,table.childNodes[1]);
+		    			}else{
+		    				table.insertBefore(div,table.childNodes[0]);
+		    			}*/
+		    			node.insertBefore(div,node.childNodes[0]);//下拉已经直接去掉#topic顶部推荐区了
+		    		}
+		        		
+		    		//下拉改变内容统一加载图片
+		    		setTimeout(function(){
+		    			var node_img = node.querySelectorAll('.con-img-add');
+		    			for(var i=0;i<node_img.length;i++)
+		    			{
+		    				node_img[i].src = http_url + node_img[i].getAttribute('data-src');
+		    				img_map[node_img[i].getAttribute('data-src')] = true;//储存已加载图片的网址
+		    				node_img[i].classList.remove('con-img-add');//去除样式标签 下次刷新不加载
+		    				node_img[i].classList.add('con-img');//增加正常样式标签
+		    			}
+		    		},100);
+            		
+            		mui('#pullrefresh').pullRefresh().endPulldownToRefresh(); //refresh completed*/
+                },function(){
+            		mui('#pullrefresh').pullRefresh().endPulldownToRefresh();
+            	},10);
+			}
+			
+			/*上拉加载具体业务实现*/
+			function pullupRefresh() {
+				getApiData(api,{m:'news',action:'newslist','cateid':id,'type':2,'newsid':min_newsid[id]},function(data){
+                	var htmldata = data.newslist;
+            		var len = htmldata.length;
+            		
+            		if(len<1){
+            			mui('#pullrefresh').pullRefresh().endPullupToRefresh();////参数为true代表没有更多数据了。
+            			mui.toast('没有更多数据了');
+            			return;//返回为空的初始化接口
+            		}
+            		
+            		var table = document.getElementById(id);
+            		for(var i=0;i<len;i++){
+            			if(htmldata[i].newsid == null) continue;//跳过newsid错误
+            			min_newsid[id] = Math.min(min_newsid[id],htmldata[i].newsid);//设置最小新闻id;
+            			
+            			if(htmldata[i].member == undefined || htmldata[i].member.length == 0) continue;//去除事件成员为空的单元
+            			//新闻列表区域
+            			var cate_arr = getCateInfo(htmldata[i].cateid);
+            			var div =  document.createElement('div');
+            			div.className = 'news-con data-newsid-'+ htmldata[i].newsid;
+            			
+            			var html = '<h3><span class="Cate-tap IcoMoon '+ cate_arr.icon +'" data-id="'+ htmldata[i].cateid +'"><span> '+ cate_arr.name +'</span></span></h3><h2 class="data-tap" data-id="'+ htmldata[i].member[0].openid +'">'+ htmldata[i].member[0].title +'</h2>';
+            			
+            			if(htmldata[i].thumb!="" && htmldata[i].thumb!=null){
+            				html += '<div class="top-pic data-tap" data-id="'+ htmldata[i].member[0].openid +'"><div class="top-pic-img top-pic-m8"><img data-src="'+ htmldata[i].thumb +'" src="img/imgload.png" class="con-img-add"></div></div>';
+            			}
+            			if(htmldata[i].member.length>1){
+            				html += '<div class="news-nr"><ul class="news-list">';
+            				for(var j=1;j<htmldata[i].member.length;j++)
+            				{
+            					html += '<li><span class="mui-btn gray">'+ htmldata[i].member[j].functag +'</span><span class="data-tap" data-id="'+ htmldata[i].member[j].openid +'">'+ htmldata[i].member[j].title +'</span></li>';
+            				}
+            				html += '</ul></div>';
+            			}
+            			div.innerHTML = html;
+            			table.appendChild(div);
+            			//加载图片
+            			//if(node_img = div.querySelector('.con-img'))
+            			//{node_img.src = http_url + node_img.getAttribute('data-src');}
+            		}
+            		
+            		//上拉刷新更改内容统一加载图片
+            		setTimeout(function(){
+            			var node_img = table.querySelectorAll('.con-img-add');
+            			for(var i=0;i<node_img.length;i++)
+            			{
+            				node_img[i].src = http_url + node_img[i].getAttribute('data-src');
+            				node_img[i].classList.remove('con-img-add');//去除样式标签 下次刷新不加载
+            				node_img[i].classList.add('con-img');//增加正常样式标签
+            			}
+            		},100);
+            		
+            		mui('#pullrefresh').pullRefresh().endPullupToRefresh();
+                },function(){
+            		mui('#pullrefresh').pullRefresh().endPullupToRefresh();
+            	},10);
+			}
+			
+			/* 打开内容页——在index统一预加载内容页和评论页*/
+            function openContent(id)
+            {
+            	var content=plus.webview.getWebviewById('content');
+            	if(!content){
+					content=plus.webview.create('content.html', 'content');
+				}
+            	mui.fire(content,"openid",{openid:id});
+				content.show('slide-in-right',300);
+            }
+		</script>
+	</body>
+</html>

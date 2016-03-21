@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<link rel="stylesheet" href="css/mui.min.css">
+	<script src="js/mui.min.js"></script>
+	<script src="js/func.js"></script>
+	<style>
+		html,body{background-color:#f6f6f8;}/*#efeff4*/
+		.mui-loader {
+			position: absolute;
+			top: 25%;
+			width: 100%;
+			height: 60%;
+			color: #888;
+			font-size: 14px;
+			text-align: center;
+		}
+		/*主体部分*/
+		.mui-scroll{background-color:#f6f6f8;}
+		.mui-content{background-color:#f6f6f8;}
+		.mui-table-view{background-color:transparent;}
+		.mui-scroll>.mui-table-view:first-child{margin-top:15px;}
+		.mui-table-view-cell{padding:8px 5px;}
+		.mui-table-view:before{height:0px;}
+		.mui-table-view:after{height:0px;}
+		.mui-table-view-cell:after{height:0px;}
+		.mui-table-view .mui-table-cell h5{color:#009BFF;}
+		.mui-table{border-bottom:1px solid #ccc; background:#fff;padding:7px;}
+		.mui-loading{margin-top:10px;background-color:#f6f6f8;}
+		
+		/*评论*/
+		.mui-button-row {padding-top:0px;}
+		.comment_input{position: fixed;z-index:3;bottom:0;width:100%;height:190px;background:#ffffff;display:none;}
+		.mui-btn-danger,.mui-btn-primary{width:45%;}
+		.mui-btn-primary{background:#009bff;border-color: #009bff;}
+		.btn-left{float:left;margin-left:10px;}
+		.btn-right{float:right;margin-right:10px;}
+		
+		/*遮罩*/
+		#shadow_all{width:100%;height:100%;bottom:0; left:0;background:#000;position:absolute;z-index:2;opacity:0.7;}
+
+		footer{border-top:1px #ddd solid;position: fixed;z-index:1;bottom:0;width:100%;height:50px;display:none;background:#fff;}
+		footer div{display: inline-block;margin-top:8px;}
+		footer .input{height:32px;line-height:32px;width:65%;border:1px #009bff solid;border-radius: 3px;margin:8px 3% auto 6%;font-size:13px;color:#ccc;}
+		footer .mui-btn{width:20%}
+		
+		/*淡入淡出*/
+		.a-fadeinT{-webkit-animation:0.1s ease-out backwards;-moz-animation:0.1s ease-out backwards;-ms-animation:0.1s ease-out backwards;animation:0.1s ease-out backwards;}
+		.a-fadeoutT{-webkit-animation:0.1s ease-in forwards;-moz-animation:0.1s ease-in forwards;-ms-animation:0.1s ease-in forwards;animation:0.1s ease-in forwards;}
+		/* 淡入-从上 */
+		.a-fadeinT{-webkit-animation-name:fadeinT;-moz-animation-name:fadeinT;-ms-animation-name:fadeinT;animation-name:fadeinT;}
+		/* 淡出-向上 */
+		.a-fadeoutT{-webkit-animation-name:fadeoutT;-moz-animation-name:fadeoutT;-ms-animation-name:fadeoutT;animation-name:fadeoutT;}
+		/* 淡入-从上 */
+		@-webkit-keyframes fadeinT{
+			0%{opacity:0;-webkit-transform:translateY(50px);}
+			100%{opacity:1;-webkit-transform:translateY(0);}
+		}
+		@-moz-keyframes fadeinT{
+			0%{opacity:0;-moz-transform:translateY(50px);}
+			100%{opacity:1;-moz-transform:translateY(0);}
+		}
+		@-ms-keyframes fadeinT{
+			0%{opacity:0;-ms-transform:translateY(50px);}
+			100%{opacity:1;-ms-transform:translateY(0);}
+		}
+		@keyframes fadeinT{
+			0%{opacity:0;transform:translateY(50px);}
+			100%{opacity:1;transform:translateY(0);}
+		}
+		/* 淡出-向上 */
+		@-webkit-keyframes fadeoutT{
+			0%{opacity:1;-webkit-transform:translateY(0);}
+			100%{opacity:0;-webkit-transform:translateY(50px);}
+		}
+		@-moz-keyframes fadeoutT{
+			0%{opacity:1;-moz-transform:translateY(0);}
+			100%{opacity:0;-moz-transform:translateY(50px);}
+		}
+		@-ms-keyframes fadeoutT{
+			0%{opacity:1;-ms-transform:translateY(0);}
+			100%{opacity:0;-ms-transform:translateY(50px);}
+		}
+		@keyframes fadeoutT{
+			0%{opacity:1;transform:translateY(0);}
+			100%{opacity:0;transform:translateY(50px);}
+		}
+	</style>
+</head>
+<body>
+	<!--下拉刷新容器-->
+	<div id="pullrefresh" class="mui-content mui-scroll-wrapper">
+		<div class="mui-scroll">
+			<ul class="mui-scroll-ul mui-table-view" id="comment_con">
+				<div class="mui-loading" style="margin-top:10px;">
+					<div class="mui-spinner"></div>
+				</div>
+				<!--li class="mui-table-view-cell">
+		            <div class="mui-table boxwirte">
+		                <div class="mui-table-cell mui-col-xs-10 ">
+		                    <h5>李四</h5>
+		                    <p class="mui-h6">Hi，李明明，申请交行信息卡</p>
+		                </div>
+		                <div class="mui-table-cell mui-col-xs-2 mui-text-right">
+		                    <span class="mui-h5">12:25</span>
+		                </div>
+		            </div>
+		        </li-->
+			</ul>
+		</div>
+	</div>
+	<!--评论-->
+	<div class="comment_input" id="comment_input">
+		<div class="mui-input-row" style="margin: 10px 10px -10px 10px;">
+			<form id="myForm">
+				<textarea id="textarea" rows="5" placeholder="内容最多为800字" maxlength="800"></textarea><!--autofocus="autofocus"-->
+			</form>
+		</div>
+		<div class="mui-button-row">
+			<button class="mui-btn mui-btn-danger btn-left" onclick="close_com_input();">取 消</button>
+			<button class="mui-btn mui-btn-primary btn-right" id="apply_comment">确 认</button>
+		</div>
+	</div>
+	<div id="shadow_all" style="display:none;"></div>
+	<!--弹出框-->
+	<footer id="footer" onclick="open_com_input();">
+		<div class="input"><span class="mui-icon mui-icon-compose"></span>（内容最多为800字）</div>
+		<div class="mui-btn mui-btn-primary" onclick="return false;">评论</div>	
+	</footer>
+	<script type="text/javascript" charset="utf-8">
+		mui.init({
+			swipeBack: true, 
+			keyEventBind: {
+				backbutton: true   
+			},
+			pullRefresh: {
+				container: '#pullrefresh',
+				down: {
+					callback: pulldownRefresh
+				},
+				up: {
+					contentrefresh: '正在加载...',
+					callback: pullupRefresh
+				}
+			}
+		});
+		
+		var articleid = 0;//稿件id
+		var maxid = 0;//最大id
+		var minid = 0;//最小id
+		var comment_con = document.getElementById('comment_con');
+		
+		//监听页面传递数据
+		window.addEventListener("openid", function(e) {
+			articleid = e.detail.articleid;
+			//document.getElementById("content").innerHTML = "评论页面:"+id;
+			maxid = 0;//最大id初始化
+			minid = 0;//最小id初始化
+			//document.getElementById('title').setAttribute('data-title',e.detail.title);
+			init();//初始化评论
+		});
+		
+		/*评论初始化*/
+		function init()
+		{
+			if(articleid==0){
+				mui.toast('稿件ID不存在');
+				return;
+			}
+        	comment_con.innerHTML = '<div class="mui-loading" style="margin-top:10px;"><div class="mui-spinner"></div></div>';
+			//取得数据
+			getApiData(api,{m:'comments',action:'list',articleid:articleid},function(data){
+				//alert(JSON.stringify(data.list));
+        		var htmldata = data.list;
+        		var len = htmldata.length;
+        		if(len<1){
+        			comment_con.innerHTML = '<p class="mui-h6" style="text-align:center;margin-top:20px">还没有人评论</p>';
+        			return;
+        		}
+        		
+        		var html = '';
+        		
+        		for(var i=0;i<len;i++){
+        			//设置newsis的 最大值和最小值
+        			maxid = Math.max(maxid,htmldata[i].commentid);//设置最大id;
+        			if(minid == 0) minid = htmldata[i].commentid;
+        			minid = Math.min(minid,htmldata[i].commentid);//设置最小id;
+        			
+        			html += '<li class="mui-table-view-cell">';
+        			html += '<div class="mui-table"> <div class="mui-table-cell mui-col-xs-10">';
+        			html += '<h5>'+ htmldata[i].ipaddr +'网友</h5>';
+        			html += '<p class="mui-h6">'+ htmldata[i].content +'</p>';
+        			html += '</div>';
+        			html += '<div class="mui-table-cell mui-col-xs-2 mui-text-right"><span class="mui-h5">'+ geMyTime(htmldata[i].addtime,6) +'</span></div>';
+        			html += '</div>';
+        			html += '</li>';
+        		}
+        		comment_con.innerHTML = html;
+	        	//默认打开评论面板
+	        	/*setTimeout(function(){
+	        		if(!subinput) subinput = plus.webview.getWebviewById("subinput_comment");
+					subinput.show("slide-in-bottom",100);//打开底部工具条
+	        	},200)*/
+            },null,300);
+		}
+		
+		function pulldownRefresh() {
+			setTimeout(function() {
+				/*var table = document.body.querySelector('.mui-table-view');
+				var cells = document.body.querySelectorAll('.mui-table-view-cell');
+				for (var i = cells.length, len = i + 3; i < len; i++) {
+					var li = document.createElement('li');
+					li.className = 'mui-table-view-cell';
+					li.innerHTML = '<a class="mui-navigate-right">Item ' + (i + 1) + '</a>';
+					//下拉刷新，新纪录插到最前面；
+					table.insertBefore(li, table.firstChild);
+				}*/
+				getApiData(api,{m:'comments',action:'list',articleid:articleid,'type':1,'commentid':maxid},function(data){
+                	var htmldata = data.list;
+            		var len = htmldata.length;
+            		
+            		if(len<1){
+            			//没有更多数据了
+            			mui('#pullrefresh').pullRefresh().endPulldownToRefresh(); //refresh completed
+            			//mui.toast("已经是最新数据了！");
+            			plus.nativeUI.toast('已经是最新数据了！',{verticalAlign:'top'});
+            			return;//返回为空的初始化接口
+            		}
+            		
+            		//var node = document.querySelector('.mui-scroll-ul');
+            		var node_li = null;
+            		for(var i=0;i<len;i++){
+            			//设置newsis的 最大值和最小值
+            			maxid = Math.max(maxid,htmldata[i].commentid);//设置最大id;
+            			
+            			node_li =  document.createElement('li');
+            			node_li.className = 'mui-table-view-cell';
+            			
+            			var html = '<div class="mui-table"> <div class="mui-table-cell mui-col-xs-10">';
+            			html += '<h5>'+ htmldata[i].ipaddr +'网友</h5>';
+            			html += '<p class="mui-h6">'+ htmldata[i].content +'</p>';
+            			html += '</div>';
+            			html += '<div class="mui-table-cell mui-col-xs-2 mui-text-right"><span class="mui-h5">'+ geMyTime(htmldata[i].addtime,6) +'</span></div>';
+            			html += '</div>';
+            			node_li.innerHTML = html;
+            			
+            			comment_con.insertBefore(node_li,comment_con.childNodes[0]);
+            			
+            		}
+            		mui('#pullrefresh').pullRefresh().endPulldownToRefresh(); //refresh completed
+                },function(){
+                	mui('#pullrefresh').pullRefresh().endPulldownToRefresh(); //refresh completed
+                },60);  
+            },500);		
+		}
+		
+		function pullupRefresh() {
+			setTimeout(function() {
+				getApiData(api,{m:'comments',action:'list',articleid:articleid,'type':2,'commentid':minid},function(data){
+                	var htmldata = data.list;
+            		var len = htmldata.length;
+            		
+            		if(len<1){
+            			mui('#pullrefresh').pullRefresh().endPullupToRefresh(true);
+            			return;//返回为空的初始化接口
+            		}
+            		var node_li = null;
+            		for(var i=0;i<len;i++){
+            			//设置newsis的 最大值和最小值
+            			minid = Math.min(minid,htmldata[i].commentid);//设置最小id;
+            			
+            			//列表区域
+            			node_li =  document.createElement('li');
+            			node_li.className = 'mui-table-view-cell';
+            			
+            			var html = '<div class="mui-table"> <div class="mui-table-cell mui-col-xs-10">';
+            			html += '<h5>'+ htmldata[i].ipaddr +'网友</h5>';
+            			html += '<p class="mui-h6">'+ htmldata[i].content +'</p>';
+            			html += '</div>';
+            			html += '<div class="mui-table-cell mui-col-xs-2 mui-text-right"><span class="mui-h5">'+ geMyTime(htmldata[i].addtime,6) +'</span></div>';
+            			html += '</div>';
+            			node_li.innerHTML = html;
+            			
+            			comment_con.appendChild(node_li);
+            		}
+            		//mui('#pullrefresh').pullRefresh().endPullupToRefresh();
+                },function(){
+                	mui('#pullrefresh').pullRefresh().endPullupToRefresh();
+                },60);
+                mui('#pullrefresh').pullRefresh().endPullupToRefresh();
+			}, 1500);
+		}
+		//返回内容页
+		window.addEventListener("dragstart",function(e){
+			if(e.detail.angle >= -10 && e.detail.angle <= 10){
+				var comment = plus.webview.getWebviewById("comment");
+				comment.hide('slide-in-left', 300);
+			}
+		});
+		
+		//显示文章底部工具条
+		var subfooter=document.getElementById("footer");
+		var comment_input=document.getElementById("comment_input");
+		var textarea_input =document.getElementById('textarea');
+		var shadow_all=document.getElementById('shadow_all');
+		var apply_comment=document.getElementById("apply_comment");
+		
+		mui.plusReady(function(){
+			var flags = {swipetop:false,swipedown:false};
+		   
+		    document.addEventListener("drag",function(e){
+		        if(e.detail.deltaY>=0){
+		            //向下
+		            if(!flags.swipedown) {
+		            	subfooter.style.display="block";
+		            	subfooter.classList.remove('a-fadeoutT');
+		            	subfooter.classList.add("a-fadeinT");
+		            }
+		            flags.swipedown = true;
+		        }else{
+		            //向上
+		            if(!flags.swipetop)  {
+		            	subfooter.classList.remove('a-fadeinT');
+		            	subfooter.classList.add("a-fadeoutT");
+		            	setTimeout(function(){subfooter.style.display="none";},100);
+		            }
+		            flags.swipetop = true;
+		        }
+		    });                                                                                                          
+		    document.addEventListener("dragend",function(e){
+		        flags = {swipetop:false,swipedown:false};
+		    });
+	    });
+		
+		
+		//显示textarea div
+		function open_com_input(){
+			//subfooter.style.display="none";
+			comment_input.style.display="block";
+			shadow_all.style.display="block";
+			textarea_input.focus();
+		}
+		
+		//隐藏textarea div
+		function close_com_input(){
+			comment_input.style.display="none";
+			shadow_all.style.display="none";
+			textarea_input.blur();
+		}
+		
+		shadow_all.addEventListener("tap",close_com_input);
+		apply_comment.addEventListener("tap",function(){
+			sendComment();
+		});
+		
+		/*发送信息 */
+		function sendComment()
+		{
+			if(articleid == 0){
+				mui.toast("稿件ID不存在");
+				return;
+			}
+			//发送数据
+			var text = textarea_input.value;
+			if(text == ''){
+				//textarea_input.focus();
+				mui.toast("评论内容不能为空");
+				return;
+			}
+			var device = plus.device.uuid;
+			
+			mui.ajax(api+'?m=comments&action=add',{
+				data:{comments:text,articleid:articleid,device:device},
+				dataType:'json',//服务器返回json格式数据
+				type:'post',//HTTP请求类型
+				timeout:10000,//超时时间设置为10秒；
+				success:function(data){
+					//服务器返回响应，根据响应结果，分析是否登录成功；
+					//alert(JSON.stringify(data));
+					if(data.status==0 && data.msg == 'ok'){
+						close_com_input();
+						textarea_input.value = '';
+						mui.toast("发送评论成功");
+					}else{
+						mui.toast(data.msg);
+					}
+				},
+				error:function(xhr,type,errorThrown){
+					//异常处理
+					//console.log(type);
+					mui.toast("网络通信异常,发送评论失败");
+					textarea_input.focus();
+				}
+			});
+			//close_com_input();
+		}
+	</script>
+</body>
+</html>

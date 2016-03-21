@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+    	<title>cnwest-h5app mask</title>
+    	<meta name="viewport" content="initial-scale=1,maximum-scale=1, user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		
+		<!--
+    	作者：fanxiu113@qq.com
+    	时间：2015-03-01
+    	描述：引入mui文件
+    	-->
+		<link rel="stylesheet" href="css/mui.min.css">
+		<script src="js/mui.min.js"></script>
+	</head>
+	<body style="background-color:#000000;color: #FFFFFF;">
+		<script>
+			mui.init({
+                swipeBack:false
+            });
+            var main=null,list=null;
+            mui.plusReady(function (){
+            	main = plus.webview.getLaunchWebview();
+            	window.addEventListener("tap",function(e){
+					close();
+				});
+				window.addEventListener("swipeleft",function(e){
+					close();
+				});
+				//监听页面拖动事件
+				window.addEventListener("dragstart",function(e){
+					//console.log('Y' + e.detail.deltaY);
+					//console.log('X' + e.detail.deltaX);
+					//console.log(e.detail.direction);
+					//console.log(e.detail.angle);
+					if(e.detail.angle >= 145 || e.detail.angle <= -145){
+						//console.log("right");
+						close();
+					}else if(e.detail.angle < -45 && e.detail.angle > -145){
+						//console.log("up");
+						
+					}
+					else if(e.detail.angle >= 45 && e.detail.angle < 145){
+						//console.log("down");
+					}
+				});
+            });
+            function close(){
+				mui.fire(main,"mask:close");
+			}
+		</script>
+	</body>
+</html>
+

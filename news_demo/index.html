@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<title></title>
+    <script src="js/mui.min.js"></script>
+    <link href="css/mui.min.css" rel="stylesheet"/>
+    <style>
+		html,body{background-color: #efeff4;}/*#efeff4*/
+		.white{color:#fff;}
+		.mui-bar{position:fixed;right:0;left:0;z-index:10;padding-right:10px;padding-left:10px;height:44px;border-bottom:0;background-color:#009bff;backface-visibility:hidden;}
+		.mui-bar-nav{box-shadow:none;top:0;}
+		.mui-title img{height:27px;width:45px;margin-top:9px;}
+		/*遮罩*/
+		#shadow_all{width:100%;height:100%;top:0; left:0;background:#000;position:fixed;z-index:1000;opacity:0.7;}
+
+	</style>
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav">
+		<a class="mui-icon mui-icon-bars mui-pull-left white"></a>
+		<h1 class="mui-title white" id="title"><img src="img/icons/logo-bar.png"/></h1>
+	</header>
+	<div id="shadow_all" style="display:none;"></div>
+	<script>
+		var menu = null,mask=null,main=null,content = null,comment = null;//list=null,
+		var showMenu = false;
+			
+		mui.init({
+			swipeBack: false,//页面右滑关闭功能
+			//statusBarBackground: '#f7f7f7',
+			subpages:[{
+				url:'list_android.html',
+				id:'list',
+				styles:{
+					top: '44px',
+					bottom: 0,
+					bounce: 'vertical'
+				},
+				extras:{}//额外扩展参数
+			}]
+		});
+		
+		 mui.plusReady(function() {
+			plus.screen.lockOrientation("portrait-primary");//锁定屏幕方向-竖屏正方向
+			main = plus.webview.currentWebview();//获取当前页面所属的Webview窗口对象。
+			main.addEventListener('maskClick',closeMenu);
+			//处理侧滑导航，为了避免和子页面初始化等竞争资源，延迟加载侧滑页面；
+			setTimeout(function () {
+				menu= mui.preload({
+					id: 'index-menu',
+					url: 'index-menu.html',
+					styles: {
+						left: 0,
+						width: '80%',
+						zindex: -1
+					},
+					show:{
+						aniShow:'none'
+					}
+				});
+				content= mui.preload({
+					id: 'content',
+					url: 'content.html',
+					styles: {
+						left: 0,
+						top: 0
+						//zindex: -1
+					},
+					show:{
+						aniShow:'none'
+					}
+				});
+				mask= mui.preload({
+					id: 'mask',
+					url: 'mask.html',
+					styles: {
+						left: 0,
+						top: 0,
+						width: '100%',
+						height: '100%',
+						opacity: 0.1,
+						zindex: 10
+					},
+				});
+				/*comment = mui.preload({
+					id: 'comment',
+					url: 'comment.html',
+					styles: {
+						left: 0,
+						top: 0
+						//zindex: -1
+					},
+					show:{
+						aniShow:'none'
+					}
+				});
+				setting = mui.preload({
+					id: 'setting',
+					url: 'setting.html',
+					styles: {
+						left: 0,
+						top: 0
+						//zindex: -1
+					},
+					show:{
+						aniShow:'none'
+					}
+				});*/
+			},100);
+		});
+		
+		/*显示侧滑菜单*/
+		function openMenu(){
+			if(!showMenu){
+				//侧滑菜单处于隐藏状态，则立即显示出来；
+				menu.show('none',0,function () {
+					//主窗体开始侧滑并显示遮罩
+					main.setStyle({
+						mask:'none',//mask影响左滑关闭菜单，但可监听maskClick关闭菜单，如39行 // rgba(0,0,0,0.4)
+						left:'80%',
+						transition: {
+							duration: 300
+						}
+					});
+					showMenu = true;
+				});
+				//mask.show('slide-in-left', 200);
+				setTimeout(function () {
+					document.getElementById('shadow_all').style.display='block';
+				},300);	
+				mui.fire(plus.webview.getWebviewById("list"),"add_zhezhao");
+			}
+		}
+		
+		/* 关闭菜单*/
+		function closeMenu(){
+			if(showMenu){
+				//关闭遮罩；
+				//主窗体开始侧滑；
+				main.setStyle({
+					mask:'none',
+					left: '0',
+					transition: {
+						duration: 300
+					}
+				});
+				showMenu = false;
+				//mask.hide();
+				//等动画结束后，隐藏菜单webview，节省资源；
+				setTimeout(function () {
+					menu.hide();
+					document.getElementById('shadow_all').style.display='none';
+				},300);	
+				mui.fire(plus.webview.getWebviewById("list"),"remove_zhezhao");
+			}
+		}
+		
+		//点击左上角侧滑图标，打开侧滑菜单；——querySelector能定位的css选择器
+		document.querySelector('.mui-icon-bars').addEventListener('tap', function () {
+			if(showMenu){
+				closeMenu();
+			}else{
+				openMenu();
+			}
+		});
+		
+		//主界面向右滑动，若菜单未显示，则显示菜单；否则不做任何操作
+		window.addEventListener("swiperight",function (e) {
+			if(e.detail.deltaX > 70){
+				openMenu();						
+			}
+		});
+		//主界面向左滑动，若菜单已显示，则关闭菜单；否则，不做任何操作；
+		window.addEventListener("swipeleft",closeMenu);
+		
+		//侧滑菜单触发关闭菜单命令——;list.html頁面自定義事件
+		window.addEventListener("menu:close",closeMenu);
+		window.addEventListener("menu:open",openMenu);   
+		window.addEventListener('remove_zhezhao', function(e) {
+			setTimeout(function () {
+				document.getElementById('shadow_all').style.display='none';
+			},300);	
+		});
+			
+		//重写mui.menu方法，Android版本menu按键按下可自动打开、关闭侧滑菜单；
+		mui.menu = function () {
+			if(showMenu){
+				closeMenu();
+			}else{
+				openMenu();
+			}
+		}
+		
+		//首页返回键处理
+		//处理逻辑：1秒内，连续两次按返回键，则退出应用；
+		var first = null;
+		mui.back = function() {
+			if(showMenu){
+				closeMenu();
+			}else{
+				//首次按键，提示‘再按一次退出应用’
+				if (!first) {
+					first = new Date().getTime();
+					mui.toast('再按一次退出应用');
+					setTimeout(function() {
+						first = null;
+					}, 1000);
+				} else {
+					if (new Date().getTime() - first < 1000) {
+						plus.runtime.quit();
+					}
+				}
+			}
+		};
+		
+		//监听事件修改title
+		var titleElem = document.getElementById("title")
+		var menu = document.getElementById("menu");
+		window.addEventListener("updateHeader", function(e) {
+			var title = unescape(e.detail.title);
+			titleElem.innerHTML = title;
+			showMenu = e.detail.showMenu;
+		});
+    </script>
+</body>
+</html>
